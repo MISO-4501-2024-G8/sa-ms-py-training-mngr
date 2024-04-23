@@ -1,27 +1,27 @@
+import pymysql
 from flask import Flask, render_template, jsonify
-
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from modelos.modelos import db
 from vistas import statusCheck, VistaTrainingPlan
-# from vistas import statusCheck
+
 from decouple import config
 
 app=Flask(__name__) # NOSONAR
+db = SQLAlchemy(app)
 
-#DATABASE_URI = config('DATABASE_URL')  
-#app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI 
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-#app.config['JWT_SECRET_KEY'] = 'frase-secreta'
-#app.config['PROPAGATE_EXCEPTIONS'] = True
+DATABASE_URI = config('DATABASE_URL')  
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
+
 app_context = app.app_context()
 app_context.push()
 db.init_app(app)
 db.create_all()
 cors = CORS(app)
-
-
 api = Api(app)
 
 
@@ -52,5 +52,5 @@ def health_check():
 
 
 
-if __name__=='__main__':
+if __name__=='__main__': 
     app.run(port=5001)

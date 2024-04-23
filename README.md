@@ -29,8 +29,7 @@ coverage html -d coverage_report
 ```
 
 correr flask
-```
-export FLASK_APP=app/app.py
+`
 flask run
 ```
 

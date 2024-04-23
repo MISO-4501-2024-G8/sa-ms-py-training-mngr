@@ -36,7 +36,7 @@ class SportsSession(db.Model):
     repeats = db.Column(db.Integer)
     location = db.Column(db.String(50))
     total_time = db.Column(db.Integer)
-    session_date = db.Column(db.DateTime, default=datetime.now)
+    session_event = db.Column(db.DateTime, default=datetime.now)
     qty_objectives_achived = db.Column(db.Integer)
 
     id_training_session = db.Column(db.Integer, db.ForeignKey('training_session.id'))
@@ -49,7 +49,7 @@ class ObjectiveInstruction(db.Model):
     instruction_time = db.Column(db.Integer)
     target_achieved = db.Column(db.Integer)
 
-    id_sports_session = db.Column(db.Integer, db.ForeignKey('sports_session.id'))
+    id_sport_session = db.Column(db.Integer, db.ForeignKey('sports_session.id'))
 
 class TrainingSessionSchema(SQLAlchemyAutoSchema):
     class Meta:
