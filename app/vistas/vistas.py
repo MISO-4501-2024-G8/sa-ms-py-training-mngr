@@ -6,7 +6,7 @@ from flask import request
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_restful import Resource
 
-from modelos.modelos import (TrainingSession, SportsSession, ObjectiveInstruction, TrainingSessionchema, SportsSessionSchema, ObjectiveInstructionSchema, db)
+from modelos.modelos import (TrainingSession, SportsSession, ObjectiveInstruction, TrainingSessionSchema, SportsSessionSchema, ObjectiveInstructionSchema, db)
 
 from pathlib import Path
 from decouple import config
@@ -14,6 +14,7 @@ from decouple import config
 
 from sqlalchemy.exc import IntegrityError
 
+training_session_schema = TrainingSessionSchema()
 #usuario_schema = UsuarioSchema()
 #definitionTask_schema = DefinitionTaskSchema()
 #task_schema = TaskSchema()
@@ -23,17 +24,46 @@ class statusCheck(Resource):
     def get(self):
         return {'status': 'ok'}
 
-"""   
-    def post(self):
-        usuario = Usuario.query.filter(Usuario.usuario == request.json["username"],
-                                        Usuario.contrasena == request.json["password"]).first()
+  
+
+class VistaTrainingPlan(Resource):
+
+      def post(self):
+        training_session = TrainingSession(event_category = request.json["event_category"],
+                                          sport_type = request.json["sport_type"],
+                                          session_date = request.json["session_date"])
+        
+        print(training_session.id)
+
+        sports_session = SportsSession(name =,
+                                       week = ,
+                                       day = ,
+                                       repeats = ,
+                                       location = ,
+                                       total_time = ,
+                                       session_date = ,
+                                       qty_objectives_achived = ,
+                                       id_training_session = training_session.id)
+
+        print(sports_session.id)
+
+        objective_instruction = ObjectiveInstruction(instruction_description =,
+                                                     instruction_time =,
+                                                     target_achieved =,
+                                                     id_sports_session = sports_session.id
+
+        )
+        
+        db.session.add(training_session)
+        db.session.add(sports_session)
+        db.session.add(objective_instruction)
         db.session.commit()
         if usuario is None:
             return "El usuario no existe", 404
         else:
             token_de_acceso = create_access_token(identity=usuario.id)
             return {"mensaje": "Inicio de sesión exitoso", "token": token_de_acceso, 'usuarioId': usuario.id}
-    
+"""    
     def put(self):
         usuario = Usuario.query.filter(Usuario.usuario == request.json["usuario"],
                                         Usuario.id == request.json["id"],
@@ -54,7 +84,6 @@ class statusCheck(Resource):
         db.session.commit()
         return '', 204
 
-class VistaTrainingPlan(Resource):
     def post(self, id_task):
         #@jwt_required()
         try:

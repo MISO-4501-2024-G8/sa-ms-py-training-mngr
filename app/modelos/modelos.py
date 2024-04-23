@@ -51,7 +51,7 @@ class ObjectiveInstruction(db.Model):
 
     id_sports_session = db.Column(db.Integer, db.ForeignKey('sports_session.id'))
 
-class TrainingSessionchema(SQLAlchemyAutoSchema):
+class TrainingSessionSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = TrainingSession
         include_relationships = True

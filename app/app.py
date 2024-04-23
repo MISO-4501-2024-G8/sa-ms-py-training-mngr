@@ -4,8 +4,8 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from modelos.modelos import db
-# from vistas import statusCheck, VistaTrainingPlan
-from vistas import statusCheck
+from vistas import statusCheck, VistaTrainingPlan
+# from vistas import statusCheck
 from decouple import config
 
 app=Flask(__name__) # NOSONAR
@@ -27,7 +27,7 @@ api = Api(app)
 
 
 api.add_resource(statusCheck, '/status')
-# api.add_resource(VistaTrainingPlan, '/create_training_plan')
+api.add_resource(VistaTrainingPlan, '/create_training_plan')
 # api.add_resource(VistaLogIn, '/api/auth/login')
 # api.add_resource(VistaTask, '/api/task/<int:id_task>')
 # api.add_resource(VistaFiles, '/api/files/<string:file_name>')
