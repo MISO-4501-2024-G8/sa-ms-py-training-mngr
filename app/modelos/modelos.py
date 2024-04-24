@@ -21,6 +21,8 @@ class TrainingSession(db.Model):
     __tablename__ = 'training_session'
 
     id = db.Column(db.Integer, primary_key=True)
+    id_sport_user = db.Column(db.String(255))
+    id_event  = db.Column(db.String(255))
     event_category = db.Column(db.String(50))
     sport_type = db.Column(db.String(50))
     session_date = db.Column(db.DateTime, default=datetime.now)
