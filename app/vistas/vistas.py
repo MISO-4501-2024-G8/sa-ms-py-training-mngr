@@ -39,7 +39,7 @@ class VistaTrainingPlan(Resource):
                                            session_date = session_date)
         
         db.session.add(training_session)
-        #db.session.commit()
+        db.session.commit()
 
         sports_session = SportsSession(name = request.json["name"],
                                        week = request.json["week"],
@@ -52,7 +52,7 @@ class VistaTrainingPlan(Resource):
                                        id_training_session = training_session.id)
         
         db.session.add(sports_session)
-        #db.session.commit()
+        db.session.commit()
 
         objective_instruction = ObjectiveInstruction(instruction_description = request.json["instruction_description"],
                                                      instruction_time = request.json["instruction_time"],

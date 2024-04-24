@@ -20,7 +20,7 @@ db = SQLAlchemy()
 class TrainingSession(db.Model):
     __tablename__ = 'training_session'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_sport_user = db.Column(db.String(255))
     id_event  = db.Column(db.String(255))
     event_category = db.Column(db.String(50))
@@ -31,7 +31,7 @@ class TrainingSession(db.Model):
 class SportsSession(db.Model):
     __tablename__ = 'sports_session'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50))
     week = db.Column(db.Integer)
     day = db.Column(db.String(50))
@@ -46,7 +46,7 @@ class SportsSession(db.Model):
 class ObjectiveInstruction(db.Model):
     __tablename__ = 'objective_instruction'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     instruction_description = db.Column(db.String(50))
     instruction_time = db.Column(db.Integer)
     target_achieved = db.Column(db.Integer)

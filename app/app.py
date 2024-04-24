@@ -10,7 +10,7 @@ from vistas import statusCheck, VistaTrainingPlan
 from decouple import config
 
 app=Flask(__name__) # NOSONAR
-db = SQLAlchemy(app)
+
 
 DATABASE_URI = config('DATABASE_URL')  
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI 
@@ -23,6 +23,7 @@ db.init_app(app)
 db.create_all()
 cors = CORS(app)
 api = Api(app)
+db = SQLAlchemy(app)
 
 
 
