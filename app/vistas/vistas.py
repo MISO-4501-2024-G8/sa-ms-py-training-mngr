@@ -138,7 +138,6 @@ class VistaTrainingSession(Resource):
             print(error_msg, e)
             db.session.rollback()
             return {"message": "No se pudo crear la sesión de entrenamiento"}, 500
-
     def put(self):
         def get_request_data(self):
             return {
@@ -561,7 +560,7 @@ class VistaTrainingPlan(Resource):
                 TrainingPlan.name == name
             ).all()
             if training_plan is None:
-                return {"message": "La sesion deportiva buscada no existe"}, 404
+                return {"message": "No se ha encontrado coninsidencia de las sesiones deportivas buscadas"}, 404
 
             return {
                 "message": "Se actualizarón correctamente los campos",
@@ -578,4 +577,7 @@ class VistaTrainingPlan(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500
         
-        
+    def delete(self, id_TrainingPlan):
+        training_plan = TrainingPlan.query.get_or_404(id_TrainingPlan)
+        db.session.delete(training_plan)
+        db.session.commit()

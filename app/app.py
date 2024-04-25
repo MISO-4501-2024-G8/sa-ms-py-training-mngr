@@ -28,8 +28,9 @@ api = Api(app)
 
 
 api.add_resource(VistaStatusCheck, '/')
-api.add_resource(VistaTrainingSession, '/create_training_session') 
-api.add_resource(VistaTrainingPlan, '/create_training_plan')
+api.add_resource(VistaTrainingSession, '/training_session') 
+api.add_resource(VistaTrainingPlan, '/training_plan')
+api.add_resource(VistaTrainingPlan, '/training_plan/<int:id_TrainingPlan>')
 
 
 jwt = JWTManager(app)
