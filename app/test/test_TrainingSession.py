@@ -12,7 +12,7 @@ class TestTrainingPlan(TestCase):
         self.data_factory = Faker()
         self.client = app.test_client()
         self.endpoint = "/create_training_session"
-"""
+
     def test_post_not_None(self):
         nuevo_training_plan_fake = {
             "id_sport_user": self.data_factory.name(),
@@ -114,4 +114,3 @@ class TestTrainingPlan(TestCase):
                                                           data = json.dumps(nuevo_training_plan_fake),
                                                           headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         self.assertFalse(solicitud_put_planEntrenamiento[0] == "Se actualizaron correctmente los campos")
-        """
