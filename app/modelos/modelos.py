@@ -20,18 +20,20 @@ db = SQLAlchemy()
 class TrainingSession(db.Model):
     __tablename__ = 'training_session'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(255), primary_key=True)
     id_sport_user = db.Column(db.String(255))
     id_event  = db.Column(db.String(255))
     event_category = db.Column(db.String(50))
     sport_type = db.Column(db.String(50))
     session_date = db.Column(db.DateTime, default=datetime.now)
+    createdAt = db.Column(db.DateTime)
+    updatedAt = db.Column(db.DateTime)
 
 
 class SportsSession(db.Model):
     __tablename__ = 'sports_session'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(255), primary_key=True)
     name = db.Column(db.String(50))
     week = db.Column(db.Integer)
     day = db.Column(db.String(50))
@@ -40,16 +42,20 @@ class SportsSession(db.Model):
     total_time = db.Column(db.Integer)
     session_event = db.Column(db.DateTime, default=datetime.now)
     qty_objectives_achived = db.Column(db.Integer)
+    createdAt = db.Column(db.DateTime)
+    updatedAt = db.Column(db.DateTime)
 
     id_training_session = db.Column(db.Integer, db.ForeignKey('training_session.id'))
 
 class ObjectiveInstruction(db.Model):
     __tablename__ = 'objective_instruction'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(255), primary_key=True)
     instruction_description = db.Column(db.String(50))
     instruction_time = db.Column(db.Integer)
     target_achieved = db.Column(db.Integer)
+    createdAt = db.Column(db.DateTime)
+    updatedAt = db.Column(db.DateTime)
 
     id_sport_session = db.Column(db.Integer, db.ForeignKey('sports_session.id'))
 
