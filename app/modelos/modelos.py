@@ -29,6 +29,7 @@ class TrainingPlan(db.Model):
     miercoles_enabled = db.Column(db.Integer)
     jueves_enabled = db.Column(db.Integer)
     viernes_enabled = db.Column(db.Integer)
+    type_plan = db.Column(db.String(255))
     sport = db.Column(db.String(255))
     createdAt = db.Column(db.DateTime)
     updatedAt = db.Column(db.DateTime)
