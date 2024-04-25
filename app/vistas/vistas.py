@@ -477,7 +477,7 @@ class VistaTrainingPlan(Resource):
                 TrainingPlan.name == data["name"]
             ).first()
             if training_plan is None:
-                return {"message": "La sesion deportiva buscada no Existe"}, 404
+                return {"message": "La sesion deportiva buscada no existe"}, 404
 
             eating_routine = EatingRoutine.query.filter(
                 EatingRoutine.id_training_plan == training_plan.id
@@ -553,4 +553,29 @@ class VistaTrainingPlan(Resource):
             print(error_msg, e)
             db.session.rollback()
             return {"message": error_upd_msg}, 500
+        
+    def get(self):
+        try:
+            name = request.json["name"]
+            training_plan = TrainingPlan.query.filter(
+                TrainingPlan.name == name
+            ).all()
+            if training_plan is None:
+                return {"message": "La sesion deportiva buscada no existe"}, 404
+
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "training_plan": training_plan_schema.dump(training_plan),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+        
         
