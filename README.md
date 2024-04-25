@@ -25,7 +25,7 @@ correr flask
 ```
 export FLASK_APP=app/app.py
 export DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session
-flask run -p 5000
+flask run -p 5001
 ```
 
 correr tests con pytest
