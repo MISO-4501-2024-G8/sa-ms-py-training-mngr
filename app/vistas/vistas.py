@@ -138,6 +138,7 @@ class VistaTrainingSession(Resource):
             print(error_msg, e)
             db.session.rollback()
             return {"message": "No se pudo crear la sesión de entrenamiento"}, 500
+    
     def put(self):
         def get_request_data(self):
             return {
@@ -235,73 +236,6 @@ class VistaTrainingPlan(Resource):
     def post(self):
         try:
             training_plan_id = generate_uuid()
-            eating_routine_id = generate_uuid()
-            objective_id = generate_uuid()
-            risk_alerts_id = generate_uuid()
-            day_food_plan_id = generate_uuid()
-            rest_routine_id = generate_uuid()
-            instruction_id = generate_uuid()
-            rest_device_id = generate_uuid()
-
-            day_food_plan = DayFoodPlan(
-                id=day_food_plan_id,
-                day=request.json["day_food_plan"],
-                food=request.json["food"],
-                qty=request.json["qty"],
-                calories=request.json["calories"],
-                value=request.json["value"],
-                id_eating_routine = eating_routine_id,
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
-            )
-
-            db.session.add(day_food_plan)
-            db.session.commit()
-      
-            eating_routine = EatingRoutine(
-                id=eating_routine_id,
-                name=request.json["eating_routine_name"],
-                description=request.json["eating_routine_description"],
-                weeks=request.json["eating_routine_weeks"],
-                max_weight=request.json["max_weight"],
-                min_weight=request.json["min_weight"],
-                location=request.json["location"],
-                id_training_plan = training_plan_id,
-                dayFoodPlanes = [day_food_plan],
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
-            )
-
-            db.session.add(eating_routine)
-            db.session.commit()
-
-            instruction = Instruction(
-                id=instruction_id,
-                instruction_description=request.json["instruction_description"],
-                instruction_time=request.json["instruction_time"],
-                id_objective=objective_id,
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
-            )
-
-            db.session.add(instruction)
-            db.session.commit()
-
-            objective = Objective(
-                id=objective_id,
-                day=request.json["day"],
-                repeats=request.json["objective_repeats"],
-                type_objective=request.json["type_objective"],
-                id_training_plan = training_plan_id,
-                instructions = [instruction],
-                id_rest_routine = rest_routine_id,
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
-            )
-
-            db.session.add(objective)
-            db.session.commit()
-
             training_plan = TrainingPlan(
                 id=training_plan_id,
                 name=request.json["name"],
@@ -321,47 +255,6 @@ class VistaTrainingPlan(Resource):
 
             db.session.add(training_plan)
             db.session.commit()
-
-            rest_device = RestDevice(
-                id=rest_device_id,
-                rest_device_name=request.json["rest_device_name"],
-                rest_device_qty=request.json["rest_device_qty"],
-                rental_value= request.json["rental_value"],
-                id_rest_routine= rest_routine_id,
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
-            )
-
-            db.session.add(rest_device)
-            db.session.commit()
-
-            rest_routine = RestRoutine(
-                id=rest_routine_id,
-                name=request.json["rest_routine_name"],
-                description=request.json["rest_routine_description"],
-                id_training_plan = training_plan_id,
-                objectives = [Objective],
-                restDevices = [rest_device],
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
-            )
-
-            db.session.add(rest_routine)
-            db.session.commit()
-
-            risk_alerts = RiskAlerts(
-                id=risk_alerts_id,
-                stop_training=request.json["stop_training"],
-                notifications=request.json["notifications"],
-                enable_phone=request.json["enable_phone"],
-                id_training_plan = training_plan_id,
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
-            )
-
-            db.session.add(risk_alerts)
-            db.session.commit()
-
             return {
                 "message": "Se pudo crear la sesión de entrenamiento exitosamante"
             }, 200
@@ -374,24 +267,10 @@ class VistaTrainingPlan(Resource):
             print(error_msg, e)
             db.session.rollback()
             return {"message": "No se pudo crear la sesión de entrenamiento"}, 500
+    
     def put(self):
         def get_request_data(self):
             return {
-                "day_food_plan": request.json["day_food_plan"],
-                "food": request.json["food"],
-                "qty": request.json["qty"],
-                "calories": request.json["calories"],
-                "value": request.json["value"],
-                "eating_routine_name": request.json["eating_routine_name"],
-                "eating_routine_description": request.json["eating_routine_description"],
-                "eating_routine_weeks": request.json["eating_routine_weeks"],
-                "max_weight": request.json["max_weight"],
-                "min_weight": request.json["min_weight"],
-                "instruction_time": request.json["instruction_time"],
-                "instruction_description": request.json["instruction_description"],
-                "day": request.json["day"],
-                "objective_repeats": request.json["objective_repeats"],
-                "type_objective": request.json["type_objective"],
                 "name": request.json["name"],
                 "description": request.json["description"],
                 "weeks": request.json["weeks"],
@@ -401,15 +280,7 @@ class VistaTrainingPlan(Resource):
                 "jueves_enabled": request.json["jueves_enabled"],
                 "viernes_enabled": request.json["viernes_enabled"],
                 "typePlan": request.json["typePlan"],
-                "sport": request.json["sport"],
-                "rest_device_name": request.json["rest_device_name"],
-                "rest_device_qty": request.json["rest_device_qty"],
-                "rental_value": request.json["rental_value"],
-                "rest_routine_name": request.json["rest_routine_name"],
-                "rest_routine_description": request.json["rest_routine_description"],
-                "stop_training": request.json["stop_training"],
-                "notifications": request.json["notifications"],
-                "enable_phone": request.json["enable_phone"]
+                "sport": request.json["sport"]
             }
 
         def update_training_plan(self, training_plan, data):
@@ -425,50 +296,6 @@ class VistaTrainingPlan(Resource):
             training_plan.sport = data[" sport"]
             training_plan.updatedAt = datetime.now()
 
-        def update_eating_routine(self, eating_routine, data):
-            eating_routine.name = data["eating_routine_name"]
-            eating_routine.description = data["eating_routine_description"]
-            eating_routine.weeks = data["eating_routine_weeks"]
-            eating_routine.max_weight = data["max_weight"]
-            eating_routine.min_weight = data["min_weight"]
-            eating_routine.updatedAt = datetime.now()
-
-        def update_objective(self, objective, data):
-            objective.day = data["day"]
-            objective.objective_repeats = data["objective_repeats"]
-            objective.type_objective = data["type_objective"]
-            objective.updatedAt = datetime.now()
-
-        def update_rest_routine(self, rest_routine, data):
-            rest_routine.name = data["rest_routine_name"]
-            rest_routine.description = data["rest_routine_description"]
-            rest_routine.updatedAt = datetime.now()
-
-        def update_risk_alerts(self, risk_alerts, data):
-            risk_alerts.stop_training = data["stop_training"]
-            risk_alerts.notifications = data["notifications"]
-            risk_alerts.enable_phone = data["enable_phone"]
-            risk_alerts.updatedAt = datetime.now()
-
-        def update_day_food_plan(self, day_food_plan, data):
-            day_food_plan.day = data["day_food_plan"]
-            day_food_plan.food = data["food"]
-            day_food_plan.qty = data["qty"]
-            day_food_plan.calories = data["calories"]
-            day_food_plan.value = data["value"]
-            day_food_plan.updatedAt = datetime.now()
-
-        def update_instruction(self, instruction, data):
-            instruction.instruction_description = data["instruction_description"]
-            instruction.instruction_time = data["instruction_time"]
-            instruction.updatedAt = datetime.now()
-
-        def update_rest_device(self, rest_device, data):
-            rest_device.name = data["rest_routine_name"]
-            rest_device.qty = data["rest_device_qty"]
-            rest_device.rental_value = data["rental_value"] 
-            rest_device.updatedAt = datetime.now()
-
         try:
             data = get_request_data(self)
 
@@ -477,70 +304,13 @@ class VistaTrainingPlan(Resource):
             ).first()
             if training_plan is None:
                 return {"message": "La sesion deportiva buscada no existe"}, 404
-
-            eating_routine = EatingRoutine.query.filter(
-                EatingRoutine.id_training_plan == training_plan.id
-            ).first()
-            if eating_routine is None:
-                return {"message": error_upd_msg, "code": 400}, 400
-
-            objective = Objective.query.filter(
-                Objective.id_training_plan == training_plan.id
-            ).first()
-            if objective is None:
-                return {"message": error_upd_msg, "code": 400}, 400
-            
-            rest_routine = RestRoutine.query.filter(
-                RestRoutine.id_training_plan == training_plan.id
-            ).first()
-            if rest_routine is None:
-                return {"message": error_upd_msg, "code": 400}, 400
-            
-            risk_alerts = RiskAlerts.query.filter(
-                RiskAlerts.id_training_plan == training_plan.id
-            ).first()
-            if risk_alerts is None:
-                return {"message": error_upd_msg, "code": 400}, 400
-            
-            day_food_plan = DayFoodPlan.query.filter(
-                DayFoodPlan.id_eating_routine == eating_routine.id
-            ).first()
-            if day_food_plan is None:
-                return {"message": error_upd_msg, "code": 400}, 400
-            
-            instruction = Instruction.query.filter(
-                Instruction.id_objective == objective.id
-            ).first()
-            if instruction is None:
-                return {"message": error_upd_msg, "code": 400}, 400
-            
-            rest_device = RestDevice.query.filter(
-                RestDevice.id_rest_routine == rest_routine.id
-            ).first()
-            if rest_device is None:
-                return {"message": error_upd_msg, "code": 400}, 400
-
+        
             update_training_plan(self, training_plan, data)
-            update_eating_routine(self, eating_routine, data)
-            update_objective(self, objective, data)
-            update_rest_routine(self, rest_routine, data)
-            update_risk_alerts(self, risk_alerts, data)
-            update_day_food_plan(self, day_food_plan, data)
-            update_instruction(self, instruction, data)
-            update_rest_device(self, rest_device, data)
-            
             db.session.commit()
 
             return {
                 "message": "Se actualizarón correctamente los campos",
                 "training_plan": training_plan_schema.dump(training_plan),
-                "eating_routine": eating_routine_schema.dump(eating_routine),
-                "objective": objective_schema.dump(objective),
-                "rest_routine": rest_routine_schema.dump(rest_routine),
-                "risk_alerts": risk_alerts_schema.dump(risk_alerts),
-                "day_food_plan": day_food_plan_schema.dump(day_food_plan),
-                "instruction": instruction_schema.dump(instruction),
-                "rest_device": rest_device_schema.dump(rest_device),
                 "code": 200,
             }, 200
 
@@ -551,19 +321,17 @@ class VistaTrainingPlan(Resource):
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": error_upd_msg}, 500
-        
-    def get(self):
+            return {"message": error_upd_msg}, 500   
+    def get(self, training_plan_id):
         try:
-            name = request.json["name"]
             training_plan = TrainingPlan.query.filter(
-                TrainingPlan.name == name
-            ).all()
+                TrainingPlan.id == training_plan_id
+            ).first()
             if training_plan is None:
-                return {"message": "No se ha encontrado coninsidencia de las sesiones deportivas buscadas"}, 404
+                return {"message": "No se ha encontrado coninsidencia del plan de entranamiento buscado"}, 404
 
             return {
-                "message": "Se actualizarón correctamente los campos",
+                "message": "Se Encontro el plan de entranamiento buscado",
                 "training_plan": training_plan_schema.dump(training_plan),
                 "code": 200,
             }, 200
@@ -581,3 +349,659 @@ class VistaTrainingPlan(Resource):
         training_plan = TrainingPlan.query.get_or_404(id_TrainingPlan)
         db.session.delete(training_plan)
         db.session.commit()
+
+class VistaObjectives(Resource):
+    def post(self):
+        try:
+            objective_id = generate_uuid()
+            objective = Objective(
+                    id=objective_id,
+                    day=request.json["day"],
+                    repeats=request.json["objective_repeats"],
+                    type_objective = request.json["type_objective"],
+                    id_training_plan = request.json["training_plan_id"],
+                    instructions = [request.json["instruction"]],
+                    id_rest_routine = request.json["id_rest_routine"],
+                    createdAt=datetime.now(),
+                    updatedAt=datetime.now()
+                )
+
+            db.session.add(objective)
+            db.session.commit()
+            return {
+                    "message": "Se pudo crear el objetivo sesión de entrenamiento exitosamante"
+                }, 200
+
+        except IntegrityError as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear el objetivo la sesión de entrenamiento"}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear el objetivo sesión de entrenamiento"}, 500
+    
+    def put(self, objective_id):
+
+        def get_request_data(self):
+            return {
+                "day": request.json["day"],
+                "objective_repeats": request.json["objective_repeats"],
+                "type_objective": request.json["type_objective"]
+            }
+
+        def update_objective(self, objective, data):
+            objective.day = data["day"]
+            objective.objective_repeats = data["objective_repeats"]
+            objective.type_objective = data["type_objective"]
+            objective.updatedAt = datetime.now()
+        
+        try:
+            data = get_request_data(self)
+            objective = Objective.query.filter(
+                Objective.id == objective_id
+            ).first()
+            if objective is None:
+                return {"message": error_upd_msg, "code": 400}, 400
+            
+            update_objective(self, objective, data)
+            db.session.commit()
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "objective": objective_schema.dump(objective),
+                "code": 200,
+            }, 200
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500 
+    
+    def get(self, objective_id):
+        try:
+           objective = Objective.query.filter(
+                Objective.id == objective_id
+            ).first()
+           if objective is None:
+                  return {"message": "No se ha encontrado coninsidencia del objetivo del plan entranamiento buscado"}, 404
+
+           return {
+                "message": "Se Encontro el objetivo del plan de entranamiento buscado",
+                "objective": objective_schema.dump(objective),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+
+class VistaInstructions(Resource):
+    def post(self):
+        try:
+            instruction_id = generate_uuid()
+            instruction = Instruction(
+                    id=instruction_id,
+                    instruction_description=request.json["instruction_description"],
+                    instruction_time=request.json["instruction_time"],
+                    id_objective=request.json["id_objective"],
+                    createdAt=datetime.now(),
+                    updatedAt=datetime.now()
+                )
+
+            db.session.add(instruction)
+            db.session.commit()
+            return {
+                        "message": "Se pudo crear la instruiccion del objetivo que pertenence a la sesión de entrenamiento exitosamante"
+                    }, 200
+
+        except IntegrityError as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la instruicción del objetivo que pertenence a la sesión de entrenamiento exitosamante"}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la instruicción del objetivo que pertenence a la sesión de entrenamiento exitosamante"}, 500  
+    def put(self, instructions_id):
+
+        def get_request_data(self):
+            return {
+               "instruction_time": request.json["instruction_time"],
+                "instruction_description": request.json["instruction_description"],
+            }
+
+        def update_instruction(self, instruction, data):
+            instruction.instruction_description = data["instruction_description"]
+            instruction.instruction_time = data["instruction_time"]
+            instruction.updatedAt = datetime.now()
+
+        try:
+            data = get_request_data(self)
+            instruction = Instruction.query.filter(
+                Instruction.id == instructions_id
+            ).first()
+            if instruction is None:
+                return {"message": error_upd_msg, "code": 400}, 400
+            
+            update_instruction(self, instruction, data)
+            db.session.commit()
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "instruction": instruction_schema.dump(instruction),
+                "code": 200,
+            }, 200
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500   
+         
+    def get(self, instruction_id):
+        try: 
+            instruction = Instruction.query.filter(
+                Instruction.id == instruction_id
+            ).first()
+            if instruction is None:
+                return {"message": "No se ha encontrado coninsidencia de la instrucciona buscada"}, 404
+
+            return {
+                "message": "Se Encontro la instrucciona buscada",
+                "instruction": instruction_schema.dump(instruction),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+
+class VistaRestRoutine(Resource):
+    def post(self):
+        try:
+            rest_routine_id = generate_uuid()
+            rest_routine = RestRoutine(
+                    id=rest_routine_id,
+                    name=request.json["rest_routine_name"],
+                    description=request.json["rest_routine_description"],
+                    id_training_plan = request.json["training_plan_id"],
+                    objectives = [request.json["objectives"]],
+                    restDevices = [request.json["rest_device"]],
+                    createdAt=datetime.now(),
+                    updatedAt=datetime.now()
+                )
+
+            db.session.add(rest_routine)
+            db.session.commit()
+            return {
+                        "message": "Se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante"
+                    }, 200
+
+        except IntegrityError as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500   
+    
+    def put(self, rest_routine_id):
+
+        def get_request_data(self):
+            return {
+               "rest_routine_name": request.json["rest_routine_name"],
+                "rest_routine_description": request.json["rest_routine_description"],
+            }
+
+        def update_rest_routine(self, rest_routine, data):
+            rest_routine.name = data["rest_routine_name"]
+            rest_routine.description = data["rest_routine_description"]
+            rest_routine.updatedAt = datetime.now()
+
+        try:
+            data = get_request_data(self)
+            rest_routine = RestRoutine.query.filter(
+                RestRoutine.id == rest_routine_id
+            ).first()
+            if rest_routine is None:
+                return {"message": error_upd_msg, "code": 400}, 400
+            
+            update_rest_routine(self, rest_routine, data)
+            db.session.commit()
+
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "rest_routine": rest_routine_schema.dump(rest_routine),
+                "code": 200,
+            }, 200
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+        
+    def get(self, rest_routine_id):
+        try: 
+            rest_routine = RestRoutine.query.filter(
+                RestRoutine.id == rest_routine_id
+            ).first()
+            if rest_routine is None:
+                return {"message": "No se ha encontrado la rutian de descanso buscada"}, 404
+
+            return {
+                "message": "Se Encontro la rutina de descanso buscada",
+                "rest_routine": rest_routine_schema.dump(rest_routine),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+
+class VistaRestDevice(Resource):
+    def post(self):
+        try:
+            rest_device_id = generate_uuid()
+            rest_device = RestDevice(
+                    id=rest_device_id,
+                    rest_device_name=request.json["rest_device_name"],
+                    rest_device_qty=request.json["rest_device_qty"],
+                    rental_value= request.json["rental_value"],
+                    id_rest_routine = request.json["rest_routine_id"] ,
+                    createdAt=datetime.now(),
+                    updatedAt=datetime.now()
+                )
+
+            db.session.add(rest_device)
+            db.session.commit()
+            return {
+                        "message": "Se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante"
+                    }, 200
+
+        except IntegrityError as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500
+        
+    def put(self, rest_device_id):
+
+        def get_request_data(self):
+            return {
+                "rest_device_name": request.json["rest_device_name"],
+                "rest_device_qty": request.json["rest_device_qty"],
+                "rental_value": request.json["rental_value"],
+            }
+
+        def update_rest_device(self, rest_device, data):
+            rest_device.name = data["rest_device_name"]
+            rest_device.qty = data["rest_device_qty"]
+            rest_device.rental_value = data["rental_value"] 
+            rest_device.updatedAt = datetime.now()
+        try:
+            data = get_request_data(self)
+            rest_device = RestDevice.query.filter(
+                RestDevice.id_rest_routine == rest_device_id
+            ).first()
+            if rest_device is None:
+                return {"message": error_upd_msg, "code": 400}, 400
+
+            
+            update_rest_device(self, rest_device, data)
+            db.session.commit()
+
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "rest_device": rest_device_schema.dump(rest_device),
+                "code": 200,
+            }, 200
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+        
+    def get(self, rest_device_id):
+        try: 
+            rest_device = RestDevice.query.filter(
+                RestDevice.id == rest_device_id
+            ).first()
+            if rest_device is None:
+                return {"message": "No se ha encontrado el dispositivo de descanso buscado"}, 404
+
+            return {
+                "message": "Se Encontro el dispositivo de descanso buscado",
+                "rest_device": rest_device_schema.dump(rest_device),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+
+class VistaRiskAlerts(Resource):
+    def post(self):
+        try:
+            risk_alerts_id = generate_uuid()
+            risk_alerts = RiskAlerts(
+                    id=risk_alerts_id,
+                    stop_training=request.json["stop_training"],
+                    notifications=request.json["notifications"],
+                    enable_phone=request.json["enable_phone"],
+                    id_training_plan = request.json["training_plan_id"],
+                    createdAt=datetime.now(),
+                    updatedAt=datetime.now()
+                )
+            db.session.add(risk_alerts)
+            db.session.commit()
+            return {
+                        "message": "Se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante"
+                    }, 200
+
+        except IntegrityError as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante"}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante"}, 500
+    
+    def put(self, risk_alerts_id):
+
+        def get_request_data(self):
+            return {
+                "stop_training": request.json["stop_training"],
+                "notifications": request.json["notifications"],
+                "enable_phone": request.json["enable_phone"]
+            }
+
+        def update_risk_alerts(self, risk_alerts, data):
+            risk_alerts.stop_training = data["stop_training"]
+            risk_alerts.notifications = data["notifications"]
+            risk_alerts.enable_phone = data["enable_phone"]
+            risk_alerts.updatedAt = datetime.now()
+
+        try:
+            data = get_request_data(self)
+            risk_alerts = RiskAlerts.query.filter(
+                RiskAlerts.id == risk_alerts_id
+            ).first()
+            if risk_alerts is None:
+                return {"message": error_upd_msg, "code": 400}, 400
+
+            
+            update_risk_alerts(self, risk_alerts, data)
+            db.session.commit()
+
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "risk_alerts": risk_alerts_schema.dump(risk_alerts),
+                "code": 200,
+            }, 200
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500   
+        
+    def get(self, risk_alerts_id):
+        try: 
+            risk_alerts = RiskAlerts.query.filter(
+                RiskAlerts.id == risk_alerts_id
+            ).first()
+            if risk_alerts is None:
+                return {"message": "No se ha encontrado al  alerta de riesgo buscada"}, 404
+
+            return {
+                "message": "Se Encontro la alerta de riesgo buscada",
+                "risk_alerts": risk_alerts_schema.dump(risk_alerts),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+
+class VistaEationgRoutine(Resource):
+    def post(self):
+        try:
+            eating_routine_id = generate_uuid()
+            eating_routine = EatingRoutine(
+                    id=eating_routine_id,
+                    name=request.json["eating_routine_name"],
+                    description=request.json["eating_routine_description"],
+                    weeks=request.json["eating_routine_weeks"],
+                    max_weight=request.json["max_weight"],
+                    min_weight=request.json["min_weight"],
+                    id_training_plan = request.json["training_plan_id"],
+                    dayFoodPlanes = [request.json["day_food_plan"]],
+                    createdAt=datetime.now(),
+                    updatedAt=datetime.now()
+                )
+
+            db.session.add(eating_routine)
+            db.session.commit()
+            return {
+                        "message": "Se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante"
+                    }, 200
+
+        except IntegrityError as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante"
+                    }, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante"
+                    }, 500
+    
+    def put(self, eating_routine_id):
+
+        def get_request_data(self):
+            return {
+              "eating_routine_name": request.json["eating_routine_name"],
+              "eating_routine_description": request.json["eating_routine_description"],
+              "eating_routine_weeks": request.json["eating_routine_weeks"],
+              "max_weight": request.json["max_weight"],
+              "min_weight": request.json["min_weight"]
+            }
+
+        def update_eating_routine(self, eating_routine, data):
+            eating_routine.name = data["eating_routine_name"]
+            eating_routine.description = data["eating_routine_description"]
+            eating_routine.weeks = data["eating_routine_weeks"]
+            eating_routine.max_weight = data["max_weight"]
+            eating_routine.min_weight = data["min_weight"]
+            eating_routine.updatedAt = datetime.now()
+
+        try:
+            data = get_request_data(self)
+            eating_routine = EatingRoutine.query.filter(
+                EatingRoutine.id == eating_routine_id
+            ).first()
+            if eating_routine is None:
+                return {"message": error_upd_msg, "code": 400}, 400
+            
+            update_eating_routine(self, eating_routine, data)
+            db.session.commit()
+
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "eating_routine": eating_routine_schema.dump(eating_routine),
+                "code": 200,
+            }, 200
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+
+    def get(self, eating_routine_id):
+        try: 
+            eating_routine = EatingRoutine.query.filter(
+                EatingRoutine.id == eating_routine_id
+            ).first()
+            if eating_routine is None:
+                return {"message": "No se ha encontrado la rutina de alimentacion buscada"}, 404
+
+            return {
+                "message": "Se Encontro la rutina de alimentacion buscada",
+                "eating_routine": eating_routine_schema.dump(eating_routine),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500   
+
+class VistaDayFoodPlan(Resource):
+    def post(self):
+        try:
+            day_food_plan_id = generate_uuid()
+            day_food_plan = DayFoodPlan(
+                    id=day_food_plan_id,
+                    day=request.json["day_food_plan"],
+                    food=request.json["food"],
+                    qty=request.json["qty"],
+                    calories=request.json["calories"],
+                    value=request.json["value"],
+                    id_eating_routine = request.json["eating_routine_id"],
+                    createdAt=datetime.now(),
+                    updatedAt=datetime.now()
+                )
+
+            db.session.add(day_food_plan)
+            db.session.commit()
+            return {
+                        "message": "Se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante"
+                    }, 200
+
+        except IntegrityError as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante"}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante"
+                    }, 500
+        
+    def put(self, day_food_plan_id):
+
+        def get_request_data(self):
+            return {
+                "day_food_plan": request.json["day_food_plan"],
+                "food": request.json["food"],
+                "qty": request.json["qty"],
+                "calories": request.json["calories"],
+                "value": request.json["value"]
+            }
+
+        def update_day_food_plan(self, day_food_plan, data):
+            day_food_plan.day = data["day_food_plan"]
+            day_food_plan.food = data["food"]
+            day_food_plan.qty = data["qty"]
+            day_food_plan.calories = data["calories"]
+            day_food_plan.value = data["value"]
+            day_food_plan.updatedAt = datetime.now()
+
+        try:
+            data = get_request_data(self)
+            day_food_plan = DayFoodPlan.query.filter(
+                DayFoodPlan.id == day_food_plan_id
+            ).first()
+            if day_food_plan is None:
+                return {"message": error_upd_msg, "code": 400}, 400
+            
+            update_day_food_plan(self, day_food_plan, data)
+            db.session.commit()
+
+            return {
+                "message": "Se actualizarón correctamente los campos",
+                "day_food_plan": day_food_plan_schema.dump(day_food_plan),
+                "code": 200,
+            }, 200
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500
+        
+    def get(self, day_food_plan_id):
+        try: 
+            day_food_plan = DayFoodPlan.query.filter(
+                DayFoodPlan.id == day_food_plan_id
+            ).first()
+            if day_food_plan is None:
+                return {"message": "No se ha encontrado el plan de cmoida diario buscado"}, 404
+
+            return {
+                "message": "Se Encontro el plan de cmoida diario buscado",
+                "day_food_plan": day_food_plan_schema.dump(day_food_plan),
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg}, 500   
+

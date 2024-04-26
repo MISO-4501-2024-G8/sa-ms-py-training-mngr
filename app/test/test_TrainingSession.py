@@ -5,13 +5,13 @@ from faker import Faker
 from faker.generator import random
 from app import app
 
+endpoint = "/create_training_session"
 
 class TestTrainingPlan(TestCase):
     
     def setUp(self):
         self.data_factory = Faker()
         self.client = app.test_client()
-        self.endpoint = "/create_training_session"
 
     def test_post_not_None(self):
         nuevo_training_plan_fake = {
@@ -33,8 +33,8 @@ class TestTrainingPlan(TestCase):
             "instruction_time": self.data_factory.word(),
             "target_achieved": self.data_factory.name()
         }
-        
-        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+        endpoint = "/training_session"
+        solicitud_crear_planEntrenamiento = self.client.post(endpoint,
                                                              data = json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
@@ -59,7 +59,8 @@ class TestTrainingPlan(TestCase):
             "instruction_time": self.data_factory.word(),
             "target_achieved": self.data_factory.name()
         }
-        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+        endpoint = "/training_session"
+        solicitud_crear_planEntrenamiento = self.client.post(endpoint,
                                                           data = json.dumps(nuevo_training_plan_fake),
                                                           headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
      
@@ -85,7 +86,8 @@ class TestTrainingPlan(TestCase):
             "instruction_time": self.data_factory.word(),
             "target_achieved": self.data_factory.name()
         }
-        solicitud_put_planEntrenamiento = self.client.put(self.endpoint,
+        endpoint = "/training_session"
+        solicitud_put_planEntrenamiento = self.client.put(endpoint,
                                                           data = json.dumps(nuevo_training_plan_fake),
                                                           headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         self.assertIsNotNone(solicitud_put_planEntrenamiento)
@@ -110,7 +112,8 @@ class TestTrainingPlan(TestCase):
             "instruction_time": self.data_factory.word(),
             "target_achieved": self.data_factory.name()
         }
-        solicitud_put_planEntrenamiento = self.client.post(self.endpoint,
+        endpoint = "/training_session"
+        solicitud_put_planEntrenamiento = self.client.post(endpoint,
                                                           data = json.dumps(nuevo_training_plan_fake),
                                                           headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         self.assertFalse(solicitud_put_planEntrenamiento[0] == "Se actualizaron correctmente los campos")

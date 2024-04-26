@@ -63,8 +63,9 @@ class Objective(db.Model):
     updatedAt = db.Column(db.DateTime)
 
     id_training_plan = db.Column(db.String(255), db.ForeignKey('training_plan.id'))
-    instructions = db.relationship('Instruction', backref='objective', lazy=True)
     id_rest_routine = db.Column(db.String(255), db.ForeignKey('rest_routine.id'))
+    instructions = db.relationship('Instruction', backref='objective', lazy=True)
+    
 
 class RestRoutine(db.Model):
     __tablename__ = 'rest_routine'
