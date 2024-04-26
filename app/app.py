@@ -30,7 +30,7 @@ api = Api(app)
 api.add_resource(VistaStatusCheck, '/')
 api.add_resource(VistaTrainingSession, '/training_session') 
 api.add_resource(VistaTrainingPlan, '/training_plan')
-api.add_resource(VistaTrainingPlan, '/training_plan/<int:id_TrainingPlan>')
+#api.add_resource(VistaTrainingPlan, '/training_plan/<id>')
 
 
 jwt = JWTManager(app)

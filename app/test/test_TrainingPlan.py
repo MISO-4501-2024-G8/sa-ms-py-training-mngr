@@ -11,7 +11,7 @@ class TestTrainingPlan(TestCase):
     def setUp(self):
         self.data_factory = Faker()
         self.client = app.test_client()
-        self.endpoint = "/create_training_session"
+
 
     def test_post_not_None(self):
         return None

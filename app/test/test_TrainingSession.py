@@ -5,7 +5,6 @@ from faker import Faker
 from faker.generator import random
 from app import app
 
-endpoint = "/create_training_session"
 
 class TestTrainingPlan(TestCase):
     
