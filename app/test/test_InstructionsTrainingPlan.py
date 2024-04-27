@@ -57,10 +57,20 @@ class TestInstructionsTrainingPlan(TestCase):
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
 
     def test_get_succes(self):
-        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint,
+        nuevo_training_plan_fake = {
+            "instruction_description": self.data_factory.name(),
+            "instruction_time": self.data_factory.random_digit(),
+            "id_objective": None ,
+        }
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        id_instruction = json.loads(solicitud_crear_planEntrenamiento)["instruction"]["id"]
+        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint.replace("977e4368", id_instruction),
                                                              data= '',
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
+        print(solicitud_crear_planEntrenamiento)
         self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "Se Encontro la instruccion buscada")
 
     def test_get_error(self):
@@ -87,7 +97,16 @@ class TestInstructionsTrainingPlan(TestCase):
             "instruction_time": self.data_factory.random_digit(),
             "id_objective": None ,
         }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        id_instruction = json.loads(solicitud_crear_planEntrenamiento)["instruction"]["id"]
+        nuevo_training_plan_fake = {
+            "instruction_description": self.data_factory.name(),
+            "instruction_time": self.data_factory.random_digit(),
+            "id_objective": None ,
+        }
+        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint.replace("977e4368", id_instruction),
                                                              data= json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)

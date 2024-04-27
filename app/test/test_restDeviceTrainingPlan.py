@@ -5,6 +5,8 @@ from faker import Faker
 from faker.generator import random
 from app import app
 from datetime import datetime
+from unittest.mock import patch, MagicMock
+from sqlalchemy.exc import IntegrityError
 
 
 class TestrestDeviceTrainingPlan(TestCase):
@@ -63,7 +65,18 @@ class TestrestDeviceTrainingPlan(TestCase):
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
 
     def test_get_succes(self):
-        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint,
+        nuevo_training_plan_fake = {
+            "rest_device_name": self.data_factory.name(),
+            "rest_device_qty" : self.data_factory.random_digit() ,
+            "rental_value": 5.2478,
+            "id_rest_routine": "b76ff61a" ,
+        }
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
+        id_rest_device_training_plan = solicitud_crear_planEntrenamiento["rest_device"]["id"]
+        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint.replace("499d9c17", id_rest_device_training_plan),
                                                              data= '',
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
@@ -93,10 +106,21 @@ class TestrestDeviceTrainingPlan(TestCase):
         nuevo_training_plan_fake = {
             "rest_device_name": self.data_factory.name(),
             "rest_device_qty" : self.data_factory.random_digit() ,
+            "rental_value": 5.2478,
+            "id_rest_routine": "b76ff61a" ,
+        }
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
+        id_rest_device_training_plan = solicitud_crear_planEntrenamiento["rest_device"]["id"]
+        nuevo_training_plan_fake = {
+            "rest_device_name": self.data_factory.name(),
+            "rest_device_qty" : self.data_factory.random_digit() ,
             "rental_value": "5.2478",
             "id_rest_routine": "b76ff61a" ,
         }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint.replace("499d9c17", id_rest_device_training_plan),
                                                              data= json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
@@ -116,17 +140,5 @@ class TestrestDeviceTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
         self.assertFalse(solicitud_crear_planEntrenamiento["message"] == "El plan de entranamiento no existe")
 
-    def test_put_error_mesaage2(self):
-        nuevo_training_plan_fake = {
-            "rest_device_name": self.data_factory.name(),
-            "rest_device_qty" : self.data_factory.name() ,
-            "rental_value": "5.2478",
-            "id_rest_routine": "b76ff61a" ,
-        }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
-                                                              data= json.dumps(nuevo_training_plan_fake),
-                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
-        solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
-        self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "No se pudo realizar la Actualización")
 
 

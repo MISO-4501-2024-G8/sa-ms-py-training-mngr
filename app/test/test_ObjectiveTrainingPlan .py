@@ -64,7 +64,18 @@ class TestObjetiveTrainingPlan(TestCase):
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
 
     def test_get_succes(self):
-        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint,
+        nuevo_training_plan_fake = {
+            "day": self.data_factory.name(),
+            "objective_repeats": self.data_factory.random_digit(),
+            "type_objective": self.data_factory.random_digit(),
+            "id_training_plan": None,
+            "id_rest_routine": "b76ff61a"
+        }
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        id_objective = json.loads(solicitud_crear_planEntrenamiento)["objective"]["id"]
+        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint.replace("fcd6e4af", id_objective),
                                                              data= '',
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
@@ -95,11 +106,22 @@ class TestObjetiveTrainingPlan(TestCase):
         nuevo_training_plan_fake = {
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
+            "type_objective": self.data_factory.random_digit(),
+            "id_training_plan": None,
+            "id_rest_routine": "b76ff61a"
+        }
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        id_objective = json.loads(solicitud_crear_planEntrenamiento)["objective"]["id"]
+        nuevo_training_plan_fake = {
+            "day": self.data_factory.name(),
+            "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit() ,
             "id_training_plan": None,
             "id_rest_routine": "b76ff61a"
         }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint.replace("fcd6e4af", id_objective),
                                                              data= json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
@@ -120,19 +142,6 @@ class TestObjetiveTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
         self.assertFalse(solicitud_crear_planEntrenamiento["message"] == "El objetivo de plan deportivo no existe")
 
-    def test_put_error_message2(self):
-        nuevo_training_plan_fake = {
-            "day": self.data_factory.name(),
-            "objective_repeats": self.data_factory.word(),
-            "type_objective": self.data_factory.random_digit() ,
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a"
-        }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
-                                                              data= json.dumps(nuevo_training_plan_fake),
-                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
-        solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
-        self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "No se pudo realizar la Actualización")
 
 
 

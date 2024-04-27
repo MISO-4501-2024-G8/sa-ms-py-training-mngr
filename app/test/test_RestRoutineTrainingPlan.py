@@ -58,7 +58,16 @@ class TestRestRoutineTrainingPlan(TestCase):
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
 
     def test_get_succes(self):
-        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint,
+        nuevo_training_plan_fake = {
+            "rest_routine_name": self.data_factory.name(),
+            "rest_routine_description": self.data_factory.name(),
+            "id_training_plan": "3872a743" ,
+        }
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        id_rest_routine = json.loads(solicitud_crear_planEntrenamiento)["rest_routine"]["id"]
+        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint.replace("b76ff61a", id_rest_routine),
                                                              data= '',
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
@@ -89,7 +98,16 @@ class TestRestRoutineTrainingPlan(TestCase):
             "rest_routine_description": self.data_factory.name(),
             "id_training_plan": "3872a743" ,
         }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        id_rest_routine = json.loads(solicitud_crear_planEntrenamiento)["rest_routine"]["id"]
+        nuevo_training_plan_fake = {
+            "rest_routine_name": self.data_factory.name(),
+            "rest_routine_description": self.data_factory.name(),
+            "id_training_plan": "3872a743" ,
+        }
+        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint.replace("b76ff61a", id_rest_routine),
                                                              data= json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
