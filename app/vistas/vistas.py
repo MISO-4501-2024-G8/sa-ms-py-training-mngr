@@ -233,7 +233,7 @@ class VistaTrainingSession(Resource):
             return {"message": error_upd_msg}, 500
         
 class VistaTrainingPlan(Resource):
-    def post(self):
+    def post(self, id):
         try:
             training_plan_id = generate_uuid()
             training_plan = TrainingPlan(
@@ -243,20 +243,20 @@ class VistaTrainingPlan(Resource):
                 weeks=request.json["weeks"],
                 lunes_enabled=request.json["lunes_enabled"],
                 martes_enabled=request.json["martes_enabled"],
-                miercoles_enabled=request.json["miercoles_enabled"],
-                jueves_enabled=request.json["jueves_enabled"],
-                viernes_enabled=request.json["viernes_enabled"],
-                typePlan=request.json["typePlan"],
-                sport= request.json["sport"],
-                Objectives = [objective],
-                createdAt=datetime.now(),
-                updatedAt=datetime.now()
+                miercoles_enabled= request.json["miercoles_enabled"],
+                jueves_enabled= request.json["jueves_enabled"],
+                viernes_enabled= request.json["viernes_enabled"],
+                type_plan = request.json["typePlan"],
+                sport = request.json["sport"],
+                createdAt = datetime.now(),
+                updatedAt = datetime.now()
             )
 
             db.session.add(training_plan)
             db.session.commit()
             return {
-                "message": "Se pudo crear la sesión de entrenamiento exitosamante"
+                "message": "Se pudo crear la sesión de entrenamiento exitosamante",
+                "training_plan": training_plan_schema.dump(training_plan)
             }, 200
 
         except IntegrityError as e:
@@ -351,16 +351,15 @@ class VistaTrainingPlan(Resource):
         db.session.commit()
 
 class VistaObjectives(Resource):
-    def post(self):
+    def post(self, id):
         try:
             objective_id = generate_uuid()
             objective = Objective(
-                    id=objective_id,
-                    day=request.json["day"],
+                    id = objective_id,
+                    day = request.json["day"],
                     repeats=request.json["objective_repeats"],
                     type_objective = request.json["type_objective"],
-                    id_training_plan = request.json["training_plan_id"],
-                    instructions = [request.json["instruction"]],
+                    id_training_plan = request.json["id_training_plan"],
                     id_rest_routine = request.json["id_rest_routine"],
                     createdAt=datetime.now(),
                     updatedAt=datetime.now()
@@ -369,7 +368,9 @@ class VistaObjectives(Resource):
             db.session.add(objective)
             db.session.commit()
             return {
-                    "message": "Se pudo crear el objetivo sesión de entrenamiento exitosamante"
+                    "message": "Se pudo crear el objetivo sesión de entrenamiento exitosamante",
+                     "objective": objective_schema.dump(objective)
+
                 }, 200
 
         except IntegrityError as e:
@@ -444,7 +445,7 @@ class VistaObjectives(Resource):
             return {"message": error_upd_msg}, 500
 
 class VistaInstructions(Resource):
-    def post(self):
+    def post(self, id):
         try:
             instruction_id = generate_uuid()
             instruction = Instruction(
@@ -459,7 +460,8 @@ class VistaInstructions(Resource):
             db.session.add(instruction)
             db.session.commit()
             return {
-                        "message": "Se pudo crear la instruiccion del objetivo que pertenence a la sesión de entrenamiento exitosamante"
+                        "message": "Se pudo crear la instruiccion del objetivo que pertenence a la sesión de entrenamiento exitosamante",
+                        "instruction": instruction_schema.dump(instruction)
                     }, 200
 
         except IntegrityError as e:
@@ -476,11 +478,13 @@ class VistaInstructions(Resource):
             return {
                "instruction_time": request.json["instruction_time"],
                 "instruction_description": request.json["instruction_description"],
+                "id_objective" :request.json["id_objective"],
             }
 
         def update_instruction(self, instruction, data):
             instruction.instruction_description = data["instruction_description"]
             instruction.instruction_time = data["instruction_time"]
+            #instruction.id_objective = data["id_objective"]
             instruction.updatedAt = datetime.now()
 
         try:
@@ -531,16 +535,16 @@ class VistaInstructions(Resource):
             return {"message": error_upd_msg}, 500
 
 class VistaRestRoutine(Resource):
-    def post(self):
+    def post(self,id):
         try:
             rest_routine_id = generate_uuid()
             rest_routine = RestRoutine(
-                    id=rest_routine_id,
-                    name=request.json["rest_routine_name"],
-                    description=request.json["rest_routine_description"],
-                    id_training_plan = request.json["training_plan_id"],
-                    objectives = [request.json["objectives"]],
-                    restDevices = [request.json["rest_device"]],
+                    id = rest_routine_id,
+                    name = request.json["rest_routine_name"],
+                    description = request.json["rest_routine_description"],
+                    id_training_plan = request.json["id_training_plan"],
+                    #objectives = [request.json["objectives"]],
+                    #restDevices = [request.json["rest_device"]],
                     createdAt=datetime.now(),
                     updatedAt=datetime.now()
                 )
@@ -548,7 +552,8 @@ class VistaRestRoutine(Resource):
             db.session.add(rest_routine)
             db.session.commit()
             return {
-                        "message": "Se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante"
+                        "message": "Se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante",
+                        "rest_routine": rest_routine_schema.dump(rest_routine),
                     }, 200
 
         except IntegrityError as e:
@@ -566,11 +571,13 @@ class VistaRestRoutine(Resource):
             return {
                "rest_routine_name": request.json["rest_routine_name"],
                 "rest_routine_description": request.json["rest_routine_description"],
+                 "id_training_plan" : request.json["id_training_plan"],
             }
 
         def update_rest_routine(self, rest_routine, data):
             rest_routine.name = data["rest_routine_name"]
             rest_routine.description = data["rest_routine_description"]
+            #rest_routine.id_training_plan = data["id_training_plan"]
             rest_routine.updatedAt = datetime.now()
 
         try:
@@ -622,15 +629,15 @@ class VistaRestRoutine(Resource):
             return {"message": error_upd_msg}, 500
 
 class VistaRestDevice(Resource):
-    def post(self):
+    def post(self, id ):
         try:
             rest_device_id = generate_uuid()
             rest_device = RestDevice(
-                    id=rest_device_id,
-                    rest_device_name=request.json["rest_device_name"],
-                    rest_device_qty=request.json["rest_device_qty"],
-                    rental_value= request.json["rental_value"],
-                    id_rest_routine = request.json["rest_routine_id"] ,
+                    id = rest_device_id,
+                    name = request.json["rest_device_name"],
+                    qty = request.json["rest_device_qty"],
+                    rental_value = request.json["rental_value"],
+                    id_rest_routine = request.json["id_rest_routine"],
                     createdAt=datetime.now(),
                     updatedAt=datetime.now()
                 )
@@ -638,7 +645,8 @@ class VistaRestDevice(Resource):
             db.session.add(rest_device)
             db.session.commit()
             return {
-                        "message": "Se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante"
+                        "message": "Se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante",
+                        "rest_device": rest_device_schema.dump(rest_device),
                     }, 200
 
         except IntegrityError as e:
@@ -657,12 +665,14 @@ class VistaRestDevice(Resource):
                 "rest_device_name": request.json["rest_device_name"],
                 "rest_device_qty": request.json["rest_device_qty"],
                 "rental_value": request.json["rental_value"],
+                 "id_rest_routine" : request.json["id_rest_routine"],
             }
 
         def update_rest_device(self, rest_device, data):
             rest_device.name = data["rest_device_name"]
             rest_device.qty = data["rest_device_qty"]
-            rest_device.rental_value = data["rental_value"] 
+            rest_device.rental_value = data["rental_value"]
+            #rest_device.id_rest_routine = data["id_rest_routine"]
             rest_device.updatedAt = datetime.now()
         try:
             data = get_request_data(self)
@@ -714,7 +724,7 @@ class VistaRestDevice(Resource):
             return {"message": error_upd_msg}, 500
 
 class VistaRiskAlerts(Resource):
-    def post(self):
+    def post(self, id):
         try:
             risk_alerts_id = generate_uuid()
             risk_alerts = RiskAlerts(
@@ -722,14 +732,15 @@ class VistaRiskAlerts(Resource):
                     stop_training=request.json["stop_training"],
                     notifications=request.json["notifications"],
                     enable_phone=request.json["enable_phone"],
-                    id_training_plan = request.json["training_plan_id"],
+                    id_training_plan = request.json["id_training_plan"],
                     createdAt=datetime.now(),
                     updatedAt=datetime.now()
                 )
             db.session.add(risk_alerts)
             db.session.commit()
             return {
-                        "message": "Se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante"
+                        "message": "Se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante",
+                        "risk_alerts": risk_alerts_schema.dump(risk_alerts),
                     }, 200
 
         except IntegrityError as e:
@@ -747,13 +758,15 @@ class VistaRiskAlerts(Resource):
             return {
                 "stop_training": request.json["stop_training"],
                 "notifications": request.json["notifications"],
-                "enable_phone": request.json["enable_phone"]
+                "enable_phone": request.json["enable_phone"],
+                "id_training_plan" : request.json["id_training_plan"]
             }
 
         def update_risk_alerts(self, risk_alerts, data):
             risk_alerts.stop_training = data["stop_training"]
             risk_alerts.notifications = data["notifications"]
             risk_alerts.enable_phone = data["enable_phone"]
+            #risk_alerts.id_training_plan = data["id_training_plan"]
             risk_alerts.updatedAt = datetime.now()
 
         try:
@@ -805,8 +818,8 @@ class VistaRiskAlerts(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500
 
-class VistaEationgRoutine(Resource):
-    def post(self):
+class VistaEatingRoutine(Resource):
+    def post(self, id):
         try:
             eating_routine_id = generate_uuid()
             eating_routine = EatingRoutine(
@@ -816,8 +829,7 @@ class VistaEationgRoutine(Resource):
                     weeks=request.json["eating_routine_weeks"],
                     max_weight=request.json["max_weight"],
                     min_weight=request.json["min_weight"],
-                    id_training_plan = request.json["training_plan_id"],
-                    dayFoodPlanes = [request.json["day_food_plan"]],
+                    id_training_plan = request.json["id_training_plan"],
                     createdAt=datetime.now(),
                     updatedAt=datetime.now()
                 )
@@ -825,7 +837,8 @@ class VistaEationgRoutine(Resource):
             db.session.add(eating_routine)
             db.session.commit()
             return {
-                        "message": "Se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante"
+                        "message": "Se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante",
+                        "eating_routine": eating_routine_schema.dump(eating_routine),
                     }, 200
 
         except IntegrityError as e:
@@ -847,7 +860,8 @@ class VistaEationgRoutine(Resource):
               "eating_routine_description": request.json["eating_routine_description"],
               "eating_routine_weeks": request.json["eating_routine_weeks"],
               "max_weight": request.json["max_weight"],
-              "min_weight": request.json["min_weight"]
+              "min_weight": request.json["min_weight"],
+              "id_training_plan" : request.json["id_training_plan"]
             }
 
         def update_eating_routine(self, eating_routine, data):
@@ -856,6 +870,7 @@ class VistaEationgRoutine(Resource):
             eating_routine.weeks = data["eating_routine_weeks"]
             eating_routine.max_weight = data["max_weight"]
             eating_routine.min_weight = data["min_weight"]
+            #eating_routine.id_training_plan = data["id_training_plan"}
             eating_routine.updatedAt = datetime.now()
 
         try:
@@ -907,7 +922,7 @@ class VistaEationgRoutine(Resource):
             return {"message": error_upd_msg}, 500   
 
 class VistaDayFoodPlan(Resource):
-    def post(self):
+    def post(selfm, id):
         try:
             day_food_plan_id = generate_uuid()
             day_food_plan = DayFoodPlan(
@@ -917,7 +932,7 @@ class VistaDayFoodPlan(Resource):
                     qty=request.json["qty"],
                     calories=request.json["calories"],
                     value=request.json["value"],
-                    id_eating_routine = request.json["eating_routine_id"],
+                    id_eating_routine = request.json["id_eating_routine"],
                     createdAt=datetime.now(),
                     updatedAt=datetime.now()
                 )
@@ -925,7 +940,8 @@ class VistaDayFoodPlan(Resource):
             db.session.add(day_food_plan)
             db.session.commit()
             return {
-                        "message": "Se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante"
+                        "message": "Se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante",
+                        "day_food_plan": day_food_plan_schema.dump(day_food_plan)
                     }, 200
 
         except IntegrityError as e:
@@ -946,7 +962,8 @@ class VistaDayFoodPlan(Resource):
                 "food": request.json["food"],
                 "qty": request.json["qty"],
                 "calories": request.json["calories"],
-                "value": request.json["value"]
+                "value": request.json["value"],
+                "id_eating_routine" : request.json["id_eating_routine"]
             }
 
         def update_day_food_plan(self, day_food_plan, data):
@@ -955,6 +972,7 @@ class VistaDayFoodPlan(Resource):
             day_food_plan.qty = data["qty"]
             day_food_plan.calories = data["calories"]
             day_food_plan.value = data["value"]
+            #day_food_plan.id_eating_routine = data["id_eating_routine"]
             day_food_plan.updatedAt = datetime.now()
 
         try:

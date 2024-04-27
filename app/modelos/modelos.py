@@ -34,7 +34,8 @@ class TrainingPlan(db.Model):
     createdAt = db.Column(db.DateTime)
     updatedAt = db.Column(db.DateTime)
 
-    objectives = db.relationship('Objective', backref='training_plan', lazy=True)
+    objectives = db.relationship('Objective', backref='training_plan')
+   
 
 class EatingRoutine(db.Model):
     __tablename__ = 'eating_routine'
