@@ -19,42 +19,54 @@ class TestTrainingPlan(TestCase):
         nuevo_training_plan_fake = {
             "name": self.data_factory.name(),
             "description": self.data_factory.name(),
-            "weeks":self.data_factory.name(),
+            "weeks": self.data_factory.random_digit(),
             "lunes_enabled": self.data_factory.random_digit() ,
             "martes_enabled": self.data_factory.random_digit(),
             "miercoles_enabled": self.data_factory.random_digit(),
             "jueves_enabled":self.data_factory.random_digit(),
             "viernes_enabled": self.data_factory.random_digit(),
-            "typePlan": self.data_factory.random_digit(),
+            "typePlan": self.data_factory.word(),
             "sport": self.data_factory.word(),
-            "Objectives" : None,
-            "createdAt" : str(datetime.now()),
-            "updatedAt" : str(datetime.now())
         }
-        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint +"/123",
                                                              data = json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
 
     def test_post_succes(self):
         nuevo_training_plan_fake = {
-            "name": self.data_factory.name(),
+           "name": self.data_factory.name(),
             "description": self.data_factory.name(),
-            "weeks":self.data_factory.name(),
+            "weeks": self.data_factory.random_digit(),
             "lunes_enabled": self.data_factory.random_digit() ,
             "martes_enabled": self.data_factory.random_digit(),
             "miercoles_enabled": self.data_factory.random_digit(),
             "jueves_enabled":self.data_factory.random_digit(),
             "viernes_enabled": self.data_factory.random_digit(),
-            "typePlan": self.data_factory.random_digit(),
+            "typePlan": self.data_factory.word(),
             "sport": self.data_factory.word(),
-            "Objectives" : None,
-            "createdAt" : str(datetime.now()),
-            "updatedAt" : str(datetime.now())
         }
-        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint + "123",
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint + "/123",
                                                              data = json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
-        solicitud_crear_planEntrenamiento = json.dumps(solicitud_crear_planEntrenamiento)
-        print("solicitud_crear_planEntrenamiento::::::", solicitud_crear_planEntrenamiento)
-        self.assertTrue(solicitud_crear_planEntrenamiento == 200 )
+        solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
+        self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "Se pudo crear la sesión de entrenamiento exitosamante")
+
+    def test_post_error(self):
+        nuevo_training_plan_fake = {
+            "name": self.data_factory.name(),
+                "description": self.data_factory.name(),
+                "weeks": self.data_factory.random_digit(),
+                "lunes_enabled": self.data_factory.name() ,
+                "martes_enabled": self.data_factory.random_digit(),
+                "miercoles_enabled": self.data_factory.random_digit(),
+                "jueves_enabled":self.data_factory.random_digit(),
+                "viernes_enabled": self.data_factory.random_digit(),
+                "typePlan": self.data_factory.word(),
+                "sport": self.data_factory.word(),
+        }
+        solicitud_crear_planEntrenamiento = self.client.post(self.endpoint + "/123",
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
+        self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "No se pudo crear la sesión de entrenamiento")

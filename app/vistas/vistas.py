@@ -68,7 +68,6 @@ class VistaStatusCheck(Resource):
     def get(self):
         return {"status": "ok"}
 
-
 class VistaTrainingSession(Resource):
     def post(self):
         try:
@@ -368,7 +367,7 @@ class VistaObjectives(Resource):
             db.session.add(objective)
             db.session.commit()
             return {
-                    "message": "Se pudo crear el objetivo sesión de entrenamiento exitosamante",
+                    "message": "Se pudo crear el objetivo sesion de entrenamiento exitosamante",
                      "objective": objective_schema.dump(objective)
 
                 }, 200
@@ -376,11 +375,11 @@ class VistaObjectives(Resource):
         except IntegrityError as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear el objetivo la sesión de entrenamiento"}, 500
+            return {"message": "No se pudo crear el objetivo la sesion de entrenamiento"}, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear el objetivo sesión de entrenamiento"}, 500
+            return {"message": "No se pudo crear el objetivo sesion de entrenamiento"}, 500
     
     def put(self, objective_id):
 
@@ -552,18 +551,18 @@ class VistaRestRoutine(Resource):
             db.session.add(rest_routine)
             db.session.commit()
             return {
-                        "message": "Se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante",
+                        "message": "Se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante",
                         "rest_routine": rest_routine_schema.dump(rest_routine),
                     }, 200
 
         except IntegrityError as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500
+            return {"message": "No se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante"}, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500   
+            return {"message": "No se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante"}, 500   
     
     def put(self, rest_routine_id):
 
@@ -645,18 +644,18 @@ class VistaRestDevice(Resource):
             db.session.add(rest_device)
             db.session.commit()
             return {
-                        "message": "Se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante",
+                        "message": "Se pudo crear el dispositio de descanso de la rutina de descanso de la sesion de entrenamiento exitosamante",
                         "rest_device": rest_device_schema.dump(rest_device),
                     }, 200
 
         except IntegrityError as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500
+            return {"message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesion de entrenamiento exitosamante"}, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesión de entrenamiento exitosamante"}, 500
+            return {"message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesion de entrenamiento exitosamante"}, 500
         
     def put(self, rest_device_id):
 
@@ -739,18 +738,18 @@ class VistaRiskAlerts(Resource):
             db.session.add(risk_alerts)
             db.session.commit()
             return {
-                        "message": "Se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante",
+                        "message": "Se pudo crear la alerta de riesgo de la sesion de entrenamiento exitosamante",
                         "risk_alerts": risk_alerts_schema.dump(risk_alerts),
                     }, 200
 
         except IntegrityError as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante"}, 500
+            return {"message": "No se pudo crear la alerta de riesgo de la sesion de entrenamiento exitosamante"}, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear la alerta de riesgo de la sesión de entrenamiento exitosamante"}, 500
+            return {"message": "No se pudo crear la alerta de riesgo de la sesion de entrenamiento exitosamante"}, 500
     
     def put(self, risk_alerts_id):
 
@@ -837,19 +836,19 @@ class VistaEatingRoutine(Resource):
             db.session.add(eating_routine)
             db.session.commit()
             return {
-                        "message": "Se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante",
+                        "message": "Se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante",
                         "eating_routine": eating_routine_schema.dump(eating_routine),
                     }, 200
 
         except IntegrityError as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante"
+            return {"message": "No se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante"
                     }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear la rutina de alimentacion de la sesión de entrenamiento exitosamante"
+            return {"message": "No se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante"
                     }, 500
     
     def put(self, eating_routine_id):
@@ -940,18 +939,18 @@ class VistaDayFoodPlan(Resource):
             db.session.add(day_food_plan)
             db.session.commit()
             return {
-                        "message": "Se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante",
+                        "message": "Se pudo crear el plan de alimentacion diario de la rutina de comida de la sesion de entrenamiento exitosamante",
                         "day_food_plan": day_food_plan_schema.dump(day_food_plan)
                     }, 200
 
         except IntegrityError as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante"}, 500
+            return {"message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesion de entrenamiento exitosamante"}, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesión de entrenamiento exitosamante"
+            return {"message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesion de entrenamiento exitosamante"
                     }, 500
         
     def put(self, day_food_plan_id):
