@@ -61,7 +61,7 @@ rest_device_schema = RestDeviceSchema()
 date_format = "%Y-%m-%d %H:%M:%S"
 
 error_msg = "Error: "
-error_upd_msg = "No se pudo realizar la Actualización "
+error_upd_msg = "No se pudo realizar la Actualización"
 
 
 class VistaStatusCheck(Resource):
@@ -231,6 +231,7 @@ class VistaTrainingSession(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500
         
+
 class VistaTrainingPlan(Resource):
     def post(self, id):
         try:
@@ -267,7 +268,7 @@ class VistaTrainingPlan(Resource):
             db.session.rollback()
             return {"message": "No se pudo crear la sesión de entrenamiento"}, 500
     
-    def put(self):
+    def put(self,id):
         def get_request_data(self):
             return {
                 "name": request.json["name"],
@@ -291,18 +292,18 @@ class VistaTrainingPlan(Resource):
             training_plan.miercoles_enabled = data["miercoles_enabled"]
             training_plan.jueves_enabled = data["jueves_enabled"]
             training_plan.viernes_enabled = data["viernes_enabled"]
-            training_plan.typePlan = data["typePlan"]
-            training_plan.sport = data[" sport"]
+            training_plan.type_plan = data["typePlan"]
+            training_plan.sport = data["sport"]
             training_plan.updatedAt = datetime.now()
 
         try:
             data = get_request_data(self)
 
             training_plan = TrainingPlan.query.filter(
-                TrainingPlan.name == data["name"]
+                TrainingPlan.id == id
             ).first()
             if training_plan is None:
-                return {"message": "La sesion deportiva buscada no existe"}, 404
+                return {"message": "El plan de entranamiento no existe"}, 404
         
             update_training_plan(self, training_plan, data)
             db.session.commit()
@@ -321,10 +322,11 @@ class VistaTrainingPlan(Resource):
             print(error_msg, e)
             db.session.rollback()
             return {"message": error_upd_msg}, 500   
-    def get(self, training_plan_id):
+    
+    def get(self, id):
         try:
             training_plan = TrainingPlan.query.filter(
-                TrainingPlan.id == training_plan_id
+                TrainingPlan.id == id
             ).first()
             if training_plan is None:
                 return {"message": "No se ha encontrado coninsidencia del plan de entranamiento buscado"}, 404
@@ -381,28 +383,32 @@ class VistaObjectives(Resource):
             db.session.rollback()
             return {"message": "No se pudo crear el objetivo sesion de entrenamiento"}, 500
     
-    def put(self, objective_id):
+    def put(self, id):
 
         def get_request_data(self):
             return {
                 "day": request.json["day"],
                 "objective_repeats": request.json["objective_repeats"],
-                "type_objective": request.json["type_objective"]
+                "type_objective": request.json["type_objective"],
+                "id_training_plan" : request.json["id_training_plan"],
+                "id_rest_routine" : request.json["id_rest_routine"]
             }
 
         def update_objective(self, objective, data):
             objective.day = data["day"]
-            objective.objective_repeats = data["objective_repeats"]
+            objective.repeats = data["objective_repeats"]
             objective.type_objective = data["type_objective"]
+            #objective.id_training_plan = data["id_training_plan"]
+            #objective.id_rest_routine = data["id_rest_routine"]
             objective.updatedAt = datetime.now()
         
         try:
             data = get_request_data(self)
             objective = Objective.query.filter(
-                Objective.id == objective_id
+                Objective.id == id
             ).first()
             if objective is None:
-                return {"message": error_upd_msg, "code": 400}, 400
+                return {"message": "El objetivo de plan deportivo no existe", "code": 400}, 400
             
             update_objective(self, objective, data)
             db.session.commit()
@@ -420,10 +426,10 @@ class VistaObjectives(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500 
     
-    def get(self, objective_id):
+    def get(self, id):
         try:
            objective = Objective.query.filter(
-                Objective.id == objective_id
+                Objective.id == id
             ).first()
            if objective is None:
                   return {"message": "No se ha encontrado coninsidencia del objetivo del plan entranamiento buscado"}, 404
@@ -471,7 +477,8 @@ class VistaInstructions(Resource):
             print(error_msg, e)
             db.session.rollback()
             return {"message": "No se pudo crear la instruicción del objetivo que pertenence a la sesión de entrenamiento exitosamante"}, 500  
-    def put(self, instructions_id):
+    
+    def put(self, id):
 
         def get_request_data(self):
             return {
@@ -489,10 +496,10 @@ class VistaInstructions(Resource):
         try:
             data = get_request_data(self)
             instruction = Instruction.query.filter(
-                Instruction.id == instructions_id
+                Instruction.id == id
             ).first()
             if instruction is None:
-                return {"message": error_upd_msg, "code": 400}, 400
+                return {"message": "No se encontro la Instruccion del plan de entrenamiento buscada", "code": 400}, 400
             
             update_instruction(self, instruction, data)
             db.session.commit()
@@ -510,16 +517,16 @@ class VistaInstructions(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500   
          
-    def get(self, instruction_id):
+    def get(self, id):
         try: 
             instruction = Instruction.query.filter(
-                Instruction.id == instruction_id
+                Instruction.id == id
             ).first()
             if instruction is None:
-                return {"message": "No se ha encontrado coninsidencia de la instrucciona buscada"}, 404
+                return {"message": "No se ha encontrado coninsidencia de la instruccion buscada"}, 404
 
             return {
-                "message": "Se Encontro la instrucciona buscada",
+                "message": "Se Encontro la instruccion buscada",
                 "instruction": instruction_schema.dump(instruction),
                 "code": 200,
             }, 200
@@ -564,7 +571,7 @@ class VistaRestRoutine(Resource):
             db.session.rollback()
             return {"message": "No se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante"}, 500   
     
-    def put(self, rest_routine_id):
+    def put(self, id):
 
         def get_request_data(self):
             return {
@@ -582,10 +589,10 @@ class VistaRestRoutine(Resource):
         try:
             data = get_request_data(self)
             rest_routine = RestRoutine.query.filter(
-                RestRoutine.id == rest_routine_id
+                RestRoutine.id == id
             ).first()
             if rest_routine is None:
-                return {"message": error_upd_msg, "code": 400}, 400
+                return {"message": "No se enconcotro la rutina de escanso buscada", "code": 400}, 400
             
             update_rest_routine(self, rest_routine, data)
             db.session.commit()
@@ -604,13 +611,13 @@ class VistaRestRoutine(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500
         
-    def get(self, rest_routine_id):
+    def get(self, id):
         try: 
             rest_routine = RestRoutine.query.filter(
-                RestRoutine.id == rest_routine_id
+                RestRoutine.id == id
             ).first()
             if rest_routine is None:
-                return {"message": "No se ha encontrado la rutian de descanso buscada"}, 404
+                return {"message": "No se ha encontrado la rutina de descanso buscada"}, 404
 
             return {
                 "message": "Se Encontro la rutina de descanso buscada",
@@ -657,7 +664,7 @@ class VistaRestDevice(Resource):
             db.session.rollback()
             return {"message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesion de entrenamiento exitosamante"}, 500
         
-    def put(self, rest_device_id):
+    def put(self, id):
 
         def get_request_data(self):
             return {
@@ -676,10 +683,10 @@ class VistaRestDevice(Resource):
         try:
             data = get_request_data(self)
             rest_device = RestDevice.query.filter(
-                RestDevice.id_rest_routine == rest_device_id
+                RestDevice.id == id
             ).first()
             if rest_device is None:
-                return {"message": error_upd_msg, "code": 400}, 400
+                return {"message": "No se encuentra el dispositivo de descanso buscado", "code": 400}, 400
 
             
             update_rest_device(self, rest_device, data)
@@ -699,10 +706,10 @@ class VistaRestDevice(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500
         
-    def get(self, rest_device_id):
+    def get(self, id):
         try: 
             rest_device = RestDevice.query.filter(
-                RestDevice.id == rest_device_id
+                RestDevice.id == id
             ).first()
             if rest_device is None:
                 return {"message": "No se ha encontrado el dispositivo de descanso buscado"}, 404
@@ -751,7 +758,7 @@ class VistaRiskAlerts(Resource):
             db.session.rollback()
             return {"message": "No se pudo crear la alerta de riesgo de la sesion de entrenamiento exitosamante"}, 500
     
-    def put(self, risk_alerts_id):
+    def put(self, id):
 
         def get_request_data(self):
             return {
@@ -771,10 +778,10 @@ class VistaRiskAlerts(Resource):
         try:
             data = get_request_data(self)
             risk_alerts = RiskAlerts.query.filter(
-                RiskAlerts.id == risk_alerts_id
+                RiskAlerts.id == id
             ).first()
             if risk_alerts is None:
-                return {"message": error_upd_msg, "code": 400}, 400
+                return {"message": "No se encontro la alerta de riesgo buscada", "code": 400}, 400
 
             
             update_risk_alerts(self, risk_alerts, data)
@@ -794,13 +801,13 @@ class VistaRiskAlerts(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500   
         
-    def get(self, risk_alerts_id):
+    def get(self, id):
         try: 
             risk_alerts = RiskAlerts.query.filter(
-                RiskAlerts.id == risk_alerts_id
+                RiskAlerts.id == id
             ).first()
             if risk_alerts is None:
-                return {"message": "No se ha encontrado al  alerta de riesgo buscada"}, 404
+                return {"message": "Se Encontro la alerta de riesgo buscada"}, 404
 
             return {
                 "message": "Se Encontro la alerta de riesgo buscada",
@@ -851,7 +858,7 @@ class VistaEatingRoutine(Resource):
             return {"message": "No se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante"
                     }, 500
     
-    def put(self, eating_routine_id):
+    def put(self, id):
 
         def get_request_data(self):
             return {
@@ -875,10 +882,10 @@ class VistaEatingRoutine(Resource):
         try:
             data = get_request_data(self)
             eating_routine = EatingRoutine.query.filter(
-                EatingRoutine.id == eating_routine_id
+                EatingRoutine.id == id
             ).first()
             if eating_routine is None:
-                return {"message": error_upd_msg, "code": 400}, 400
+                return {"message": "No se econtro la rutina de alimentacion buscada", "code": 400}, 400
             
             update_eating_routine(self, eating_routine, data)
             db.session.commit()
@@ -897,10 +904,10 @@ class VistaEatingRoutine(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500
 
-    def get(self, eating_routine_id):
+    def get(self, id):
         try: 
             eating_routine = EatingRoutine.query.filter(
-                EatingRoutine.id == eating_routine_id
+                EatingRoutine.id == id
             ).first()
             if eating_routine is None:
                 return {"message": "No se ha encontrado la rutina de alimentacion buscada"}, 404
@@ -953,7 +960,7 @@ class VistaDayFoodPlan(Resource):
             return {"message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesion de entrenamiento exitosamante"
                     }, 500
         
-    def put(self, day_food_plan_id):
+    def put(self, id):
 
         def get_request_data(self):
             return {
@@ -977,10 +984,10 @@ class VistaDayFoodPlan(Resource):
         try:
             data = get_request_data(self)
             day_food_plan = DayFoodPlan.query.filter(
-                DayFoodPlan.id == day_food_plan_id
+                DayFoodPlan.id == id
             ).first()
             if day_food_plan is None:
-                return {"message": error_upd_msg, "code": 400}, 400
+                return {"message": "No se encontre el plan diario de comida", "code": 400}, 400
             
             update_day_food_plan(self, day_food_plan, data)
             db.session.commit()
@@ -999,16 +1006,16 @@ class VistaDayFoodPlan(Resource):
             db.session.rollback()
             return {"message": error_upd_msg}, 500
         
-    def get(self, day_food_plan_id):
+    def get(self, id):
         try: 
             day_food_plan = DayFoodPlan.query.filter(
-                DayFoodPlan.id == day_food_plan_id
+                DayFoodPlan.id == id
             ).first()
             if day_food_plan is None:
-                return {"message": "No se ha encontrado el plan de cmoida diario buscado"}, 404
+                return {"message": "No se ha encontrado el plan de comida diario buscado"}, 404
 
             return {
-                "message": "Se Encontro el plan de cmoida diario buscado",
+                "message": "Se Encontro el plan de comida diario buscado",
                 "day_food_plan": day_food_plan_schema.dump(day_food_plan),
                 "code": 200,
             }, 200
