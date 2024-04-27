@@ -141,4 +141,23 @@ class TestDayFoofTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
         self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "No se pudo realizar la Actualización")
 
+    
+    def test_put_get_integrity_error(self):
+        endpoint = "/day_food_training_plan/integrity_error"
+        nuevo_training_plan_fake = {
+            "day_food_plan": self.data_factory.name(),
+            "food" : self.data_factory.word(),
+            "calories" : self.data_factory.random_digit(),
+            "value": self.data_factory.random_digit(),
+            "id_eating_routine": None,
+
+        }
+        self.client.put(endpoint,
+                        data= json.dumps(nuevo_training_plan_fake),
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        self.client.get(endpoint,
+                        data= '',
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        
+
 

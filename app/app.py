@@ -14,9 +14,6 @@ from vistas import (
     VistaRiskAlerts,
     VistaDayFoodPlan,
     VistaRestDevice,
-
-
-    #VistaTrainingSession,
     )
 from decouple import config
 
@@ -36,8 +33,6 @@ api = Api(app) # NOSONAR
 
 
 api.add_resource(VistaStatusCheck, '/')
-#api.add_resource(VistaTrainingSession, '/training_session')
-
 api.add_resource(VistaTrainingPlan, '/training_plan/<id>')
 api.add_resource(VistaObjectives, '/objetive_training_plan/<id>')
 api.add_resource(VistaInstructions, '/instruction_training_plan/<id>')

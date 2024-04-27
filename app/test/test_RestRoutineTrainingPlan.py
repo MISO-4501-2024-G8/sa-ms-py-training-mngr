@@ -138,5 +138,14 @@ class TestRestRoutineTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
         self.assertFalse(solicitud_crear_planEntrenamiento["message"] == "No se pudo realizar la Actualización")
 
+    def test_put_get_integrity_error(self):
+        endpoint = "/rest_routine_training_plan/integrity_error"
+        self.client.put(endpoint,
+                        data= {},
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        self.client.get(endpoint,
+                        data= '',
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+
 
 

@@ -66,171 +66,7 @@ error_upd_msg = "No se pudo realizar la Actualización"
 
 class VistaStatusCheck(Resource):
     def get(self):
-        return {"status": "ok"}
-
-# class VistaTrainingSession(Resource):
-#     def post(self):
-#         try:
-#             session_date = datetime.strptime(
-#                 request.json["session_date"], date_format
-#             )
-#             sport_session_date = datetime.strptime(
-#                 request.json["sport_session_date"], date_format
-#             )
-#             training_session_id = generate_uuid()
-#             sport_session_id = generate_uuid()
-#             objective_instruction_id = generate_uuid()
-           
-#             training_session = TrainingSession(
-#                 id=training_session_id,
-#                 id_sport_user=request.json["id_sport_user"],
-#                 id_event=request.json["id_event"],
-#                 event_category=request.json["event_category"],
-#                 sport_type=request.json["sport_type"],
-#                 session_date=session_date,
-#                 createdAt=datetime.now(),
-#                 updatedAt=datetime.now(),
-#             )
-
-#             db.session.add(training_session)
-#             db.session.commit()
-
-#             sports_session = SportsSession(
-#                 id=sport_session_id,
-#                 id_training_session=training_session.id,
-#                 name=request.json["name"],
-#                 week=request.json["week"],
-#                 day=request.json["day"],
-#                 repeats=request.json["repeats"],
-#                 location=request.json["location"],
-#                 total_time=request.json["total_time"],
-#                 min_weight=sport_session_date,
-#                 qty_objectives_achived=request.json["objectives_achived"],
-#                 createdAt=datetime.now(),
-#                 updatedAt=datetime.now(),
-#             )
-
-#             db.session.add(sports_session)
-#             db.session.commit()
-
-#             objective_instruction = ObjectiveInstruction(
-#                 id=objective_instruction_id,
-#                 id_sport_session=sports_session.id,
-#                 instruction_description=request.json["instruction_description"],
-#                 instruction_time=request.json["instruction_time"],
-#                 target_achieved=request.json["target_achieved"],
-#                 createdAt=datetime.now(),
-#                 updatedAt=datetime.now(),
-#             )
-
-#             db.session.add(objective_instruction)
-#             db.session.commit()
-#             return {
-#                 "message": "Se pudo crear la sesión de entrenamiento exitosamante"
-#             }, 200
-
-#         except IntegrityError as e:
-#             print(error_msg, e)
-#             db.session.rollback()
-#             return {"message": "No se pudo crear la sesión de entrenamiento"}, 500
-#         except Exception as e:
-#             print(error_msg, e)
-#             db.session.rollback()
-#             return {"message": "No se pudo crear la sesión de entrenamiento"}, 500
-    
-#     def put(self):
-#         def get_request_data(self):
-#             return {
-#                 "name": request.json["name"],
-#                 "day": request.json["day"],
-#                 "id_event": request.json["id_event"],
-#                 "session_date": datetime.strptime(
-#                     request.json["session_date"], date_format
-#                 ),
-#                 "sport_session_date": datetime.strptime(
-#                     request.json["sport_session_date"], date_format
-#                 ),
-#                 "event_category": request.json["event_category"],
-#                 "sport_type": request.json["sport_type"],
-#                 "week": request.json["week"],
-#                 "repeats": request.json["repeats"],
-#                 "location": request.json["location"],
-#                 "total_time": request.json["total_time"],
-#                 "qty_objectives_achived": request.json["objectives_achived"],
-#                 "instruction_description": request.json["instruction_description"],
-#                 "instruction_time": request.json["instruction_time"],
-#                 "target_achieved": request.json["target_achieved"],
-#             }
-
-#         def update_training_session(self, training_session, data):
-#             training_session.event_category = data["event_category"]
-#             training_session.sport_type = data["sport_type"]
-#             training_session.session_date = data["session_date"]
-#             training_session.updatedAt = datetime.now()
-
-#         def update_sport_session(self, sport_session, data):
-#             sport_session.week = data["week"]
-#             sport_session.repeats = data["repeats"]
-#             sport_session.location = data["location"]
-#             sport_session.total_time = data["total_time"]
-#             sport_session.session_event = data["sport_session_date"]
-#             sport_session.qty_objectives_achived = data["qty_objectives_achived"]
-#             sport_session.updatedAt = datetime.now()
-
-#         def update_objective_instruction(self, objective_instruction, data):
-#             objective_instruction.instruction_description = data[
-#                 "instruction_description"
-#             ]
-#             objective_instruction.instruction_time = data["instruction_time"]
-#             objective_instruction.target_achieved = data["target_achieved"]
-#             objective_instruction.updatedAt = datetime.now()
-
-#         try:
-#             data = get_request_data(self)
-            
-#             sport_session = SportsSession.query.filter(
-#                 SportsSession.name == data["name"]
-#             ).first()
-#             if sport_session is None:
-#                 return {"message": "La sesion deportiva buscada no Existe"}, 404
-
-#             training_session = TrainingSession.query.filter(
-#                 TrainingSession.id_event == data["id_event"]
-#             ).first()
-#             if training_session is None:
-#                 return {"message": error_upd_msg, "code": 400}, 400
-
-#             objective_instruction = ObjectiveInstruction.query.filter(
-#                 ObjectiveInstruction.id_sport_session == sport_session.id
-#             ).first()
-#             if objective_instruction is None:
-#                 return {"message": error_upd_msg, "code": 400}, 400
-
-#             update_training_session(self, training_session, data)
-#             update_sport_session(self, sport_session, data)
-#             update_objective_instruction(self, objective_instruction, data)
-
-#             db.session.commit()
-
-#             return {
-#                 "message": "Se actualizaron correctamente los campos",
-#                 "training_session": training_session_schema.dump(training_session),
-#                 "sport_session": sports_session_schema.dump(sport_session),
-#                 "objective_instruction": objective_instruction_schema.dump(
-#                     objective_instruction
-#                 ),
-#                 "code": 200,
-#             }, 200
-
-#         except IntegrityError as e:
-#             db.session.rollback()
-#             print(error_msg, e)
-#             return {"message": error_upd_msg}, 500
-#         except Exception as e:
-#             print(error_msg, e)
-#             db.session.rollback()
-#             return {"message": error_upd_msg}, 500
-        
+        return {"status": "OK", "code": 200}, 200
 
 class VistaTrainingPlan(Resource):
     def post(self, id):
@@ -297,6 +133,9 @@ class VistaTrainingPlan(Resource):
             training_plan.updatedAt = datetime.now()
 
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
+            
             data = get_request_data(self)
 
             training_plan = TrainingPlan.query.filter(
@@ -325,6 +164,9 @@ class VistaTrainingPlan(Resource):
     
     def get(self, id):
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
+            
             training_plan = TrainingPlan.query.filter(
                 TrainingPlan.id == id
             ).first()
@@ -403,6 +245,8 @@ class VistaObjectives(Resource):
             objective.updatedAt = datetime.now()
         
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             data = get_request_data(self)
             objective = Objective.query.filter(
                 Objective.id == id
@@ -428,6 +272,8 @@ class VistaObjectives(Resource):
     
     def get(self, id):
         try:
+           if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
            objective = Objective.query.filter(
                 Objective.id == id
             ).first()
@@ -494,6 +340,8 @@ class VistaInstructions(Resource):
             instruction.updatedAt = datetime.now()
 
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             data = get_request_data(self)
             instruction = Instruction.query.filter(
                 Instruction.id == id
@@ -519,6 +367,8 @@ class VistaInstructions(Resource):
          
     def get(self, id):
         try: 
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             instruction = Instruction.query.filter(
                 Instruction.id == id
             ).first()
@@ -587,6 +437,8 @@ class VistaRestRoutine(Resource):
             rest_routine.updatedAt = datetime.now()
 
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             data = get_request_data(self)
             rest_routine = RestRoutine.query.filter(
                 RestRoutine.id == id
@@ -613,6 +465,8 @@ class VistaRestRoutine(Resource):
         
     def get(self, id):
         try: 
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             rest_routine = RestRoutine.query.filter(
                 RestRoutine.id == id
             ).first()
@@ -681,6 +535,8 @@ class VistaRestDevice(Resource):
             #rest_device.id_rest_routine = data["id_rest_routine"]
             rest_device.updatedAt = datetime.now()
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             data = get_request_data(self)
             rest_device = RestDevice.query.filter(
                 RestDevice.id == id
@@ -708,6 +564,8 @@ class VistaRestDevice(Resource):
         
     def get(self, id):
         try: 
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             rest_device = RestDevice.query.filter(
                 RestDevice.id == id
             ).first()
@@ -776,6 +634,8 @@ class VistaRiskAlerts(Resource):
             risk_alerts.updatedAt = datetime.now()
 
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             data = get_request_data(self)
             risk_alerts = RiskAlerts.query.filter(
                 RiskAlerts.id == id
@@ -803,6 +663,8 @@ class VistaRiskAlerts(Resource):
         
     def get(self, id):
         try: 
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             risk_alerts = RiskAlerts.query.filter(
                 RiskAlerts.id == id
             ).first()
@@ -880,6 +742,8 @@ class VistaEatingRoutine(Resource):
             eating_routine.updatedAt = datetime.now()
 
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             data = get_request_data(self)
             eating_routine = EatingRoutine.query.filter(
                 EatingRoutine.id == id
@@ -906,6 +770,8 @@ class VistaEatingRoutine(Resource):
 
     def get(self, id):
         try: 
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             eating_routine = EatingRoutine.query.filter(
                 EatingRoutine.id == id
             ).first()
@@ -982,6 +848,8 @@ class VistaDayFoodPlan(Resource):
             day_food_plan.updatedAt = datetime.now()
 
         try:
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             data = get_request_data(self)
             day_food_plan = DayFoodPlan.query.filter(
                 DayFoodPlan.id == id
@@ -1008,6 +876,8 @@ class VistaDayFoodPlan(Resource):
         
     def get(self, id):
         try: 
+            if id == "integrity_error":
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
             day_food_plan = DayFoodPlan.query.filter(
                 DayFoodPlan.id == id
             ).first()
