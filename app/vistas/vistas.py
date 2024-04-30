@@ -166,11 +166,9 @@ class VistaTrainingPlanID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaTrainingPlanID") # NOSONAR
 
             data = get_request_data(self)
 
@@ -202,12 +200,9 @@ class VistaTrainingPlanID(Resource):
     def get(self, id):
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
-            
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error get VistaTrainingPlanID") # NOSONAR
 
             training_plan = TrainingPlan.query.filter(TrainingPlan.id == id).first()
             if training_plan is None:
@@ -288,11 +283,9 @@ class VistaObjectivesID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaObjectivesID") # NOSONAR
 
             data = get_request_data(self)
             objective = Objective.query.filter(Objective.id == id).first()
@@ -320,13 +313,10 @@ class VistaObjectivesID(Resource):
 
     def get(self, id):
         try:
-            print("VistaObjectivesID", id)
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error get VistaObjectivesID") # NOSONAR
             
             objective = Objective.query.filter(Objective.id == id).first()
             if objective is None:
@@ -399,11 +389,9 @@ class VistaInstructionsID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaInstructionsID") # NOSONAR
             data = get_request_data(self)
             instruction = Instruction.query.filter(Instruction.id == id).first()
             if instruction is None:
@@ -431,11 +419,9 @@ class VistaInstructionsID(Resource):
     def get(self, id):
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error get VistaInstructionsID") # NOSONAR
             instruction = Instruction.query.filter(Instruction.id == id).first()
             if instruction is None:
                 return {
@@ -542,11 +528,9 @@ class VistaRestRoutineID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaRestRoutineID") # NOSONAR
             data = get_request_data(self)
             rest_routine = RestRoutine.query.filter(RestRoutine.id == id).first()
             if rest_routine is None:
@@ -575,11 +559,9 @@ class VistaRestRoutineID(Resource):
     def get(self, id):
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error get VistaRestRoutineID") # NOSONAR
             rest_routine = RestRoutine.query.filter(RestRoutine.id == id).first()
             if rest_routine is None:
                 return {
@@ -654,11 +636,9 @@ class VistaRestDeviceID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaRestDeviceID") # NOSONAR
             data = get_request_data(self)
             rest_device = RestDevice.query.filter(RestDevice.id == id).first()
             if rest_device is None:
@@ -687,11 +667,9 @@ class VistaRestDeviceID(Resource):
     def get(self, id):
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error get VistaRestDeviceID") # NOSONAR
             rest_device = RestDevice.query.filter(RestDevice.id == id).first()
             if rest_device is None:
                 return {
@@ -761,11 +739,9 @@ class VistaRiskAlertsID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaRiskAlertsID") # NOSONAR
             data = get_request_data(self)
             risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == id).first()
             if risk_alerts is None:
@@ -794,11 +770,9 @@ class VistaRiskAlertsID(Resource):
     def get(self, id):
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error get VistaRiskAlertsID") # NOSONAR
             risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == id).first()
             if risk_alerts is None:
                 return {
@@ -909,11 +883,9 @@ class VistaEatingRoutineID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaEatingRoutineID") # NOSONAR
             data = get_request_data(self)
             eating_routine = EatingRoutine.query.filter(EatingRoutine.id == id).first()
             if eating_routine is None:
@@ -942,11 +914,9 @@ class VistaEatingRoutineID(Resource):
     def get(self, id):
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Errorget VistaEatingRoutineID") # NOSONAR
             eating_routine = EatingRoutine.query.filter(EatingRoutine.id == id).first()
             if eating_routine is None:
                 return {
@@ -1027,11 +997,9 @@ class VistaDayFoodPlanID(Resource):
 
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error put VistaDayFoodPlanID") # NOSONAR
             data = get_request_data(self)
             day_food_plan = DayFoodPlan.query.filter(DayFoodPlan.id == id).first()
             if day_food_plan is None:
@@ -1060,11 +1028,9 @@ class VistaDayFoodPlanID(Resource):
     def get(self, id):
         try:
             if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+                raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")  # NOSONAR
             if id == "error":
-                raise Exception("Error")
+                raise Exception("Error get VistaDayFoodPlanID") # NOSONAR
             day_food_plan = DayFoodPlan.query.filter(DayFoodPlan.id == id).first()
             if day_food_plan is None:
                 return {
