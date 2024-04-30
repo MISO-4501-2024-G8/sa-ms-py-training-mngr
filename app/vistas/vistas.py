@@ -86,13 +86,6 @@ class VistaTrainingPlan(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la sesión de entrenamiento",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -259,14 +252,6 @@ class VistaObjectives(Resource):
                 "objective": objective_schema.dump(objective),
                 "code": 200,
             }, 200
-
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear el objetivo sesion",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -374,13 +359,6 @@ class VistaInstructions(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la instruicción del objetivo que pertenence a la sesión de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -484,13 +462,6 @@ class VistaRestRoutine(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -633,13 +604,6 @@ class VistaRestDevice(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -745,13 +709,6 @@ class VistaRiskAlerts(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la alerta de riesgo de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -859,13 +816,6 @@ class VistaEatingRoutine(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -1011,13 +961,6 @@ class VistaDayFoodPlan(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
