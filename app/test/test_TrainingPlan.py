@@ -44,6 +44,7 @@ class TestTrainingPlan(TestCase):
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
 
     def test_post_succes(self):
+        self.client.get(self.endpoint, data="", headers={"Content-Type": "application/json"}).get_data().decode("utf-8")
         nuevo_training_plan_fake = {
             "name": self.data_factory.name(),
             "description": self.data_factory.name(),
@@ -74,6 +75,57 @@ class TestTrainingPlan(TestCase):
             solicitud_crear_planEntrenamiento["message"]
             == "Se pudo crear la sesión de entrenamiento exitosamante"
         )
+        
+
+    def test_all_fields(self):
+        nuevo_training_plan_fake = {
+            "name": self.data_factory.name(),
+            "description": self.data_factory.name(),
+            "weeks": self.data_factory.random_digit(),
+            "lunes_enabled": self.data_factory.random_digit(),
+            "martes_enabled": self.data_factory.random_digit(),
+            "miercoles_enabled": self.data_factory.random_digit(),
+            "jueves_enabled": self.data_factory.random_digit(),
+            "viernes_enabled": self.data_factory.random_digit(),
+            "typePlan": self.data_factory.word(),
+            "sport": self.data_factory.word(),
+            "id_eating_routine": "123",
+            "id_rest_routine": "123",
+        }
+        solicitud_crear_planEntrenamiento = (
+            self.client.post(
+                self.endpoint,
+                data=json.dumps(nuevo_training_plan_fake),
+                headers={"Content-Type": "application/json"},
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_planEntrenamiento = json.loads(
+            solicitud_crear_planEntrenamiento
+        )
+        id_training_plan = solicitud_crear_planEntrenamiento["training_plan"]["id"]
+        nuevo_training_plan_fake = {
+            "day": self.data_factory.name(),
+            "objective_repeats": self.data_factory.random_digit(),
+            "type_objective": self.data_factory.random_digit(),
+            "id_routine": id_training_plan,
+        }
+        solicitud_crear_planEntrenamiento = (
+            self.client.post(
+                "/objetive_training_plan",
+                data=json.dumps(nuevo_training_plan_fake),
+                headers={"Content-Type": "application/json"},
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_planEntrenamiento = json.loads(
+            solicitud_crear_planEntrenamiento
+        )
+        print('test_all_fields ',solicitud_crear_planEntrenamiento)
+        self.client.get(self.endpoint, data="", headers={"Content-Type": "application/json"}).get_data().decode("utf-8")
+
 
     def test_post_error(self):
         nuevo_training_plan_fake = {

@@ -100,6 +100,38 @@ class VistaTrainingPlan(Resource):
                 "message": "No se pudo crear la sesión de entrenamiento",
                 "code": 500,
             }, 500
+    
+    def get(self):
+        try:
+            training_plans = TrainingPlan.query.all()
+            if training_plans is None or len(training_plans) == 0:
+                return {
+                    "message": "No se ha encontrado la sesión de entrenamiento buscada",
+                    "code": 404,
+                }, 404
+
+            result_training_plans = []
+            for training_plan in training_plans:
+                tp = training_plan_schema.dump(training_plan)
+                objectives = Objective.query.filter(Objective.id_routine == tp["id"]).all()
+                objetivos = []
+                for obj in objectives:
+                    obj_i = objective_schema.dump(obj) 
+                    obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
+                    objetivos.append(obj_i)
+                tp["objectives"] = objetivos
+                result_training_plans.append(tp)
+
+            return {
+                "message": "Se Encontraron las sesiones",
+                "training_plans": result_training_plans,
+                "code": 200,
+            }, 200
+
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg, "code": 500}, 500
 
 
 class VistaTrainingPlanID(Resource):
@@ -464,6 +496,44 @@ class VistaRestRoutine(Resource):
                 "message": "No se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante",
                 "code": 500,
             }, 500
+        
+    def get(self):
+        try:
+            rest_routine = RestRoutine.query.all()
+            if rest_routine is None:
+                return {
+                    "message": "No se ha encontrado la rutina de descanso buscada",
+                    "code": 404,
+                }, 404
+
+            result_rest_routines = []
+            for rest_routine in rest_routine:
+                rest_rt = rest_routine_schema.dump(rest_routine)
+                rest_obj = Objective.query.filter(Objective.id_routine == rest_rt["id"]).all()
+                objetivos = []
+                for obj in rest_obj:
+                    obj_i = objective_schema.dump(obj) 
+                    obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
+                    objetivos.append(obj_i)
+                rest_rt["objectives"] = objetivos
+                rest_devices = RestDevice.query.filter(RestDevice.id_rest_routine == rest_rt["id"]).all()
+                rest_rt["rest_devices"] = rest_device_schema.dump(rest_devices, many=True)
+                result_rest_routines.append(rest_rt)
+        
+            return {
+                "message": "Se Encontraron las rutinas de descanso",
+                "rest_routines": result_rest_routines,
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg, "code": 500}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg, "code": 500}, 500
 
 
 class VistaRestRoutineID(Resource):
@@ -801,6 +871,37 @@ class VistaEatingRoutine(Resource):
                 "message": "No se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante",
                 "code": 500,
             }, 500
+    
+    def get(self):
+        try:
+            eating_routines = EatingRoutine.query.all()
+            if eating_routines is None:
+                return {
+                    "message": "No se ha encontrado la rutina de alimentacion buscada",
+                    "code": 404,
+                }, 404
+            
+            result_eating_routine = []
+            for routine in eating_routines:
+                routine_dict = eating_routine_schema.dump(routine)
+                day_food_plans = DayFoodPlan.query.filter(DayFoodPlan.id_eating_routine == routine.id).all()
+                routine_dict["day_food_plans"] = day_food_plan_schema.dump(day_food_plans, many=True)
+                result_eating_routine.append(routine_dict)
+
+            return {
+                "message": "Se Encontraron las rutinas de alimentacion",
+                "eating_routine": result_eating_routine,
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            db.session.rollback()
+            print(error_msg, e)
+            return {"message": error_upd_msg, "code": 500}, 500
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": error_upd_msg, "code": 500}, 500
 
 
 class VistaEatingRoutineID(Resource):
