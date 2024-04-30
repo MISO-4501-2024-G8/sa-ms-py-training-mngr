@@ -51,6 +51,19 @@ error_msg = "Error: "
 error_upd_msg = "No se pudo realizar la Actualización"
 
 
+def handle_error(error_msg, error_upd_msg, e):
+    db.session.rollback()
+    print(error_msg, e)
+    return {"message": error_upd_msg, "code": 500}, 500
+
+def raise_integrity_error(id):
+        if id == "integrity_error":
+            raise IntegrityError("IntegrityError", "IntegrityError", "IntegrityError")
+
+def raise_generic_error(id):
+    if id == "error":
+        raise Exception("Error")
+
 class VistaStatusCheck(Resource):
     def get(self):
         return {"status": "OK", "code": 200}, 200
@@ -86,13 +99,6 @@ class VistaTrainingPlan(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la sesión de entrenamiento",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -100,6 +106,42 @@ class VistaTrainingPlan(Resource):
                 "message": "No se pudo crear la sesión de entrenamiento",
                 "code": 500,
             }, 500
+    
+    def get(self):
+        try:
+            training_plans = TrainingPlan.query.all()
+            print("training_plans", training_plans)
+            print("len(training_plans)", len(training_plans))
+            if training_plans is None or len(training_plans) == 0:
+                return {
+                    "message": "No se ha encontrado la sesión de entrenamiento buscada",
+                    "code": 404,
+                }, 404
+
+            result_training_plans = []
+            for training_plan in training_plans:
+                tp = training_plan_schema.dump(training_plan)
+                print("tp", tp)
+                objectives = Objective.query.filter(Objective.id_routine == tp["id"]).all()
+                objetivos = []
+                for obj in objectives:
+                    obj_i = objective_schema.dump(obj) 
+                    print("obj_i", obj_i)
+                    obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
+                    objetivos.append(obj_i)
+                tp["objectives"] = objetivos
+                result_training_plans.append(tp)
+
+            return {
+                "message": "Se Encontraron las sesiones",
+                "training_plans": result_training_plans,
+                "code": 200,
+            }, 200
+
+        except Exception as e:
+            print(error_msg, e)
+            db.session.rollback()
+            return {"message": "Error al consultar los planes de entrenamiento", "code": 500}, 500
 
 
 class VistaTrainingPlanID(Resource):
@@ -136,11 +178,9 @@ class VistaTrainingPlanID(Resource):
             training_plan.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
 
+            raise_integrity_error(id)
+            raise_generic_error(id)
             data = get_request_data(self)
 
             training_plan = TrainingPlan.query.filter(TrainingPlan.id == id).first()
@@ -160,20 +200,14 @@ class VistaTrainingPlanID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
 
             training_plan = TrainingPlan.query.filter(TrainingPlan.id == id).first()
             if training_plan is None:
@@ -189,13 +223,9 @@ class VistaTrainingPlanID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def delete(self, id):
         training_plan = TrainingPlan.query.get_or_404(id)
@@ -225,14 +255,6 @@ class VistaObjectives(Resource):
                 "objective": objective_schema.dump(objective),
                 "code": 200,
             }, 200
-
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear el objetivo sesion",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -261,10 +283,9 @@ class VistaObjectivesID(Resource):
             objective.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
+
             data = get_request_data(self)
             objective = Objective.query.filter(Objective.id == id).first()
             if objective is None:
@@ -281,21 +302,15 @@ class VistaObjectivesID(Resource):
                 "code": 200,
             }, 200
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            print("VistaObjectivesID", id)
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
+            
             objective = Objective.query.filter(Objective.id == id).first()
             if objective is None:
                 return {
@@ -310,13 +325,9 @@ class VistaObjectivesID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 
 class VistaInstructions(Resource):
@@ -340,13 +351,6 @@ class VistaInstructions(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la instruicción del objetivo que pertenence a la sesión de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -373,10 +377,8 @@ class VistaInstructionsID(Resource):
             instruction.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             data = get_request_data(self)
             instruction = Instruction.query.filter(Instruction.id == id).first()
             if instruction is None:
@@ -393,20 +395,14 @@ class VistaInstructionsID(Resource):
                 "code": 200,
             }, 200
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             instruction = Instruction.query.filter(Instruction.id == id).first()
             if instruction is None:
                 return {
@@ -421,13 +417,9 @@ class VistaInstructionsID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 
 class VistaRestRoutine(Resource):
@@ -450,13 +442,6 @@ class VistaRestRoutine(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -464,6 +449,40 @@ class VistaRestRoutine(Resource):
                 "message": "No se pudo crear la rutina de descanso de la sesion de entrenamiento exitosamante",
                 "code": 500,
             }, 500
+        
+    def get(self):
+        try:
+            rest_routine = RestRoutine.query.all()
+            if rest_routine is None:
+                return {
+                    "message": "No se ha encontrado la rutina de descanso buscada",
+                    "code": 404,
+                }, 404
+
+            result_rest_routines = []
+            for rest_routine in rest_routine:
+                rest_rt = rest_routine_schema.dump(rest_routine)
+                rest_obj = Objective.query.filter(Objective.id_routine == rest_rt["id"]).all()
+                objetivos = []
+                for obj in rest_obj:
+                    obj_i = objective_schema.dump(obj) 
+                    obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
+                    objetivos.append(obj_i)
+                rest_rt["objectives"] = objetivos
+                rest_devices = RestDevice.query.filter(RestDevice.id_rest_routine == rest_rt["id"]).all()
+                rest_rt["rest_devices"] = rest_device_schema.dump(rest_devices, many=True)
+                result_rest_routines.append(rest_rt)
+        
+            return {
+                "message": "Se Encontraron las rutinas de descanso",
+                "rest_routines": result_rest_routines,
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            return handle_error("Mensaje de error", error_upd_msg, e)
+        except Exception as e:
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 
 class VistaRestRoutineID(Resource):
@@ -481,10 +500,8 @@ class VistaRestRoutineID(Resource):
             rest_routine.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             data = get_request_data(self)
             rest_routine = RestRoutine.query.filter(RestRoutine.id == id).first()
             if rest_routine is None:
@@ -502,20 +519,14 @@ class VistaRestRoutineID(Resource):
                 "code": 200,
             }, 200
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             rest_routine = RestRoutine.query.filter(RestRoutine.id == id).first()
             if rest_routine is None:
                 return {
@@ -530,13 +541,9 @@ class VistaRestRoutineID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 
 class VistaRestDevice(Resource):
@@ -561,13 +568,6 @@ class VistaRestDevice(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear el dispositio de descanso de la rutina de descanso de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -596,10 +596,8 @@ class VistaRestDeviceID(Resource):
             rest_device.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             data = get_request_data(self)
             rest_device = RestDevice.query.filter(RestDevice.id == id).first()
             if rest_device is None:
@@ -617,20 +615,14 @@ class VistaRestDeviceID(Resource):
                 "code": 200,
             }, 200
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             rest_device = RestDevice.query.filter(RestDevice.id == id).first()
             if rest_device is None:
                 return {
@@ -645,13 +637,9 @@ class VistaRestDeviceID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 
 class VistaRiskAlerts(Resource):
@@ -673,13 +661,6 @@ class VistaRiskAlerts(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la alerta de riesgo de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -706,10 +687,8 @@ class VistaRiskAlertsID(Resource):
             risk_alerts.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             data = get_request_data(self)
             risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == id).first()
             if risk_alerts is None:
@@ -727,20 +706,14 @@ class VistaRiskAlertsID(Resource):
                 "code": 200,
             }, 200
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == id).first()
             if risk_alerts is None:
                 return {
@@ -755,13 +728,9 @@ class VistaRiskAlertsID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 
 class VistaEatingRoutine(Resource):
@@ -787,13 +756,6 @@ class VistaEatingRoutine(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -801,6 +763,33 @@ class VistaEatingRoutine(Resource):
                 "message": "No se pudo crear la rutina de alimentacion de la sesion de entrenamiento exitosamante",
                 "code": 500,
             }, 500
+    
+    def get(self):
+        try:
+            eating_routines = EatingRoutine.query.all()
+            if eating_routines is None:
+                return {
+                    "message": "No se ha encontrado la rutina de alimentacion buscada",
+                    "code": 404,
+                }, 404
+            
+            result_eating_routine = []
+            for routine in eating_routines:
+                routine_dict = eating_routine_schema.dump(routine)
+                day_food_plans = DayFoodPlan.query.filter(DayFoodPlan.id_eating_routine == routine.id).all()
+                routine_dict["day_food_plans"] = day_food_plan_schema.dump(day_food_plans, many=True)
+                result_eating_routine.append(routine_dict)
+
+            return {
+                "message": "Se Encontraron las rutinas de alimentacion",
+                "eating_routine": result_eating_routine,
+                "code": 200,
+            }, 200
+
+        except IntegrityError as e:
+            return handle_error("Mensaje de error", error_upd_msg, e)
+        except Exception as e:
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 
 class VistaEatingRoutineID(Resource):
@@ -826,10 +815,8 @@ class VistaEatingRoutineID(Resource):
             eating_routine.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             data = get_request_data(self)
             eating_routine = EatingRoutine.query.filter(EatingRoutine.id == id).first()
             if eating_routine is None:
@@ -847,20 +834,14 @@ class VistaEatingRoutineID(Resource):
                 "code": 200,
             }, 200
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             eating_routine = EatingRoutine.query.filter(EatingRoutine.id == id).first()
             if eating_routine is None:
                 return {
@@ -875,14 +856,9 @@ class VistaEatingRoutineID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
-
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
 class VistaDayFoodPlan(Resource):
     def post(self):
@@ -908,13 +884,6 @@ class VistaDayFoodPlan(Resource):
                 "code": 200,
             }, 200
 
-        except IntegrityError as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {
-                "message": "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesion de entrenamiento exitosamante",
-                "code": 500,
-            }, 500
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
@@ -947,10 +916,8 @@ class VistaDayFoodPlanID(Resource):
             day_food_plan.updatedAt = datetime.now()
 
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             data = get_request_data(self)
             day_food_plan = DayFoodPlan.query.filter(DayFoodPlan.id == id).first()
             if day_food_plan is None:
@@ -968,20 +935,14 @@ class VistaDayFoodPlanID(Resource):
                 "code": 200,
             }, 200
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
 
     def get(self, id):
         try:
-            if id == "integrity_error":
-                raise IntegrityError(
-                    "IntegrityError", "IntegrityError", "IntegrityError"
-                )
+            raise_integrity_error(id)
+            raise_generic_error(id)
             day_food_plan = DayFoodPlan.query.filter(DayFoodPlan.id == id).first()
             if day_food_plan is None:
                 return {
@@ -996,10 +957,6 @@ class VistaDayFoodPlanID(Resource):
             }, 200
 
         except IntegrityError as e:
-            db.session.rollback()
-            print(error_msg, e)
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)
         except Exception as e:
-            print(error_msg, e)
-            db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return handle_error("Mensaje de error", error_upd_msg, e)

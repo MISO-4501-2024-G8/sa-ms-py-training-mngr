@@ -79,6 +79,19 @@ class TestDayFoofTrainingPlan(TestCase):
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
         self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "No se ha encontrado el plan de comida diario buscado")
+    
+    def test_get_ex_error(self):
+        endpoint = "/day_food_training_plan/error"
+        solicitud_crear_planEntrenamiento = self.client.get(endpoint,
+                                                             data= '',
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+    
+    def test_get_integrity_error(self):
+        endpoint = "/day_food_training_plan/integrity_error"
+        solicitud_crear_planEntrenamiento = self.client.get(endpoint,
+                                                             data= '',
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+
 
     def test_put_not_None(self):
         nuevo_training_plan_fake = {
@@ -159,4 +172,17 @@ class TestDayFoofTrainingPlan(TestCase):
                         headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         
 
+    def test_put_get_error(self):
+        endpoint = "/day_food_training_plan/error"
+        nuevo_training_plan_fake = {
+            "day_food_plan": self.data_factory.name(),
+            "food" : self.data_factory.word(),
+            "calories" : self.data_factory.random_digit(),
+            "value": self.data_factory.random_digit(),
+            "id_eating_routine": None,
 
+        }
+        self.client.put(endpoint,
+                        data= json.dumps(nuevo_training_plan_fake),
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        

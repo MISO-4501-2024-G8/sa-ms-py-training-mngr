@@ -143,6 +143,41 @@ class TestObjetiveTrainingPlan(TestCase):
             "No se ha encontrado coninsidencia del objetivo del plan entranamiento buscado"
         )
 
+    def test_get_integrity_error(self):
+        endpoint = "/objetive_training_plan/integrity_error"
+        solicitud_crear_planEntrenamiento = (
+            self.client.get(
+                endpoint, data="", headers={"Content-Type": "application/json"}
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_planEntrenamiento = json.loads(
+            solicitud_crear_planEntrenamiento
+        )
+
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se pudo realizar la Actualización"
+        )
+    def test_get_ex_error(self):
+        endpoint = "/objetive_training_plan/error"
+        solicitud_crear_planEntrenamiento = (
+            self.client.get(
+                endpoint, data="", headers={"Content-Type": "application/json"}
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_planEntrenamiento = json.loads(
+            solicitud_crear_planEntrenamiento
+        )
+
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se pudo realizar la Actualización"
+        )
+
     def test_put_not_None(self):
         nuevo_training_plan_fake = {
             "day": self.data_factory.name(),
@@ -228,6 +263,36 @@ class TestObjetiveTrainingPlan(TestCase):
 
     def test_put_integrity_error(self):
         endpoint = "/objetive_training_plan/integrity_error"
+        nuevo_training_plan_fake = {
+            "day": self.data_factory.name(),
+            "objective_repeats": self.data_factory.random_digit(),
+            "type_objective": self.data_factory.random_digit(),
+            "id_routine": "b76ff61a",
+        }
+        solicitud_crear_planEntrenamiento = (
+            self.client.put(
+                endpoint,
+                data=json.dumps(nuevo_training_plan_fake),
+                headers={"Content-Type": "application/json"},
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_planEntrenamiento = json.loads(
+            solicitud_crear_planEntrenamiento
+        )
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se pudo realizar la Actualización",
+        )
+        self.client.get(
+            endpoint,
+            data=json.dumps(nuevo_training_plan_fake),
+            headers={"Content-Type": "application/json"},
+        ).get_data().decode("utf-8")
+
+    def test_put_error(self):
+        endpoint = "/objetive_training_plan/error"
         nuevo_training_plan_fake = {
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
