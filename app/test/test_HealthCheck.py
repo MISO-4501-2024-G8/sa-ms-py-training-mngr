@@ -6,7 +6,7 @@ from faker.generator import random
 from app import app
 
 
-class TestTrainingSession(TestCase):
+class TestHealthCheck(TestCase):
     
     def setUp(self):
         self.data_factory = Faker()

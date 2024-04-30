@@ -12,7 +12,8 @@ class TestDayFoofTrainingPlan(TestCase):
     def setUp(self):
         self.data_factory = Faker()
         self.client = app.test_client()
-        self.endpoint = "/day_food_training_plan/1ec7b141"
+        self.endpoint_id = "/day_food_training_plan/1ec7b141"
+        self.endpoint = "/day_food_training_plan"
 
 
     def test_post_not_None(self):
@@ -51,8 +52,6 @@ class TestDayFoofTrainingPlan(TestCase):
             "food" : self.data_factory.word(),
             "calories" : self.data_factory.random_digit(),
             "value": self.data_factory.word(),
-            "id_eating_routine": None,
-
         }
         solicitud_crear_planEntrenamiento = self.client.post(self.endpoint,
                                                              data = json.dumps(nuevo_training_plan_fake),
@@ -61,13 +60,13 @@ class TestDayFoofTrainingPlan(TestCase):
         self.assertTrue(solicitud_crear_planEntrenamiento["message"] == "No se pudo crear el plan de alimentacion diario de la rutina de comida de la sesion de entrenamiento exitosamante")
 
     def test_get_not_None(self):
-        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint_id,
                                                              data= '',
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
 
     def test_get_succes(self):
-        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.get(self.endpoint_id,
                                                              data= '',
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
@@ -90,7 +89,7 @@ class TestDayFoofTrainingPlan(TestCase):
             "id_eating_routine": None,
 
         }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint_id,
                                                              data= json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         self.assertIsNotNone(solicitud_crear_planEntrenamiento)
@@ -104,7 +103,7 @@ class TestDayFoofTrainingPlan(TestCase):
             "id_eating_routine": None,
 
         }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint_id,
                                                              data= json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
@@ -135,7 +134,7 @@ class TestDayFoofTrainingPlan(TestCase):
             "id_eating_routine": None,
 
         }
-        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint,
+        solicitud_crear_planEntrenamiento = self.client.put(self.endpoint_id,
                                                               data= json.dumps(nuevo_training_plan_fake),
                                                              headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
         solicitud_crear_planEntrenamiento = json.loads(solicitud_crear_planEntrenamiento)
