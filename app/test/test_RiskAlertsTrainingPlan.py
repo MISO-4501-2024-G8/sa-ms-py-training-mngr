@@ -45,8 +45,8 @@ class TestRiskAlertsTrainingPlan(TestCase):
             "viernes_enabled": self.data_factory.random_digit(),
             "typePlan": self.data_factory.word(),
             "sport": self.data_factory.word(),
-            "id_eating_routine": self.data_factory.name(),
-            "id_rest_routine": self.data_factory.name(),
+            "id_eating_routine": "123",
+            "id_rest_routine": "123",
         }
         solicitud_crear_planEntrenamiento = self.client.post("/training_plan",
                                                              data = json.dumps(nuevo_training_plan_fake),
@@ -172,8 +172,8 @@ class TestRiskAlertsTrainingPlan(TestCase):
             "viernes_enabled": self.data_factory.random_digit(),
             "typePlan": self.data_factory.word(),
             "sport": self.data_factory.word(),
-            "id_eating_routine": self.data_factory.name(),
-            "id_rest_routine": self.data_factory.name(),
+            "id_eating_routine": "123",
+            "id_rest_routine": "123",
         }
         solicitud_crear_planEntrenamiento = self.client.post("/training_plan",
                                                              data = json.dumps(nuevo_training_plan_fake),
@@ -244,9 +244,18 @@ class TestRiskAlertsTrainingPlan(TestCase):
             solicitud_crear_planEntrenamiento["message"]
             == "No se encontro la alerta de riesgo buscada"
         )
-
+        
     def test_put_get_integrity_error(self):
         endpoint = "/risk_alerts_training_plan/integrity_error"
+        self.client.put(endpoint,
+                        data= {},
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        self.client.get(endpoint,
+                        data= '',
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+    
+    def test_put_get_ex_error(self):
+        endpoint = "/risk_alerts_training_plan/error"
         self.client.put(endpoint,
                         data= {},
                         headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")

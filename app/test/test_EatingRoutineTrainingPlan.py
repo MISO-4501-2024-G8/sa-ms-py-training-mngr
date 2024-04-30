@@ -143,6 +143,48 @@ class TestEatingRoutineTrainingPlan(TestCase):
         self.client.get(endpoint,
                         data= '',
                         headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+    
+    def test_put_get_ex_error(self):
+        endpoint = "/eating_routing_training_plan/error"
+        self.client.put(endpoint,
+                        data= {},
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        self.client.get(endpoint,
+                        data= '',
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
 
+
+    def test_all_fields(self):
+        nuevo_training_plan_fake = {
+            "eating_routine_name": self.data_factory.name(),
+            "eating_routine_description" : self.data_factory.word(),
+            "eating_routine_weeks" :self.data_factory.random_digit(),
+            "max_weight": 5.5,
+            "min_weight": 6.6
+        }
+        solicitud_crear_plan_alimentacion = self.client.post(self.endpoint,
+                                                             data = json.dumps(nuevo_training_plan_fake),
+                                                             headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        solicitud_crear_plan_alimentacion = json.loads(solicitud_crear_plan_alimentacion)
+        print('test_all_fields 1: --------------',solicitud_crear_plan_alimentacion)
+        id_eating_routine = solicitud_crear_plan_alimentacion["eating_routine"]["id"]
+        nuevo_training_food_fake = {
+            "day_food_plan": self.data_factory.name(),
+            "food" : self.data_factory.word(),
+            "qty": self.data_factory.random_digit(),
+            "calories" : self.data_factory.random_digit(),
+            "value": self.data_factory.random_digit(),
+            "id_eating_routine": id_eating_routine,
+
+        }
+        solicitud_crear_alimento = self.client.post('/day_food_training_plan',
+                                                    data = json.dumps(nuevo_training_food_fake),
+                                                    headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        solicitud_crear_alimento = json.loads(solicitud_crear_alimento)
+        print('test_all_fields 2: --------------',solicitud_crear_alimento)
+        get_all_eating_routines = (self.client.get(self.endpoint, headers={"Content-Type": "application/json"}).get_data().decode("utf-8"))
+        get_all_eating_routines = json.loads(get_all_eating_routines)
+        print('test_all_fields 3: --------------',get_all_eating_routines)
+        
 
 
