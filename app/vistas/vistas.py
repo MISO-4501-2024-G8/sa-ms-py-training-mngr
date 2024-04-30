@@ -113,10 +113,12 @@ class VistaTrainingPlan(Resource):
             result_training_plans = []
             for training_plan in training_plans:
                 tp = training_plan_schema.dump(training_plan)
+                print("tp", tp)
                 objectives = Objective.query.filter(Objective.id_routine == tp["id"]).all()
                 objetivos = []
                 for obj in objectives:
                     obj_i = objective_schema.dump(obj) 
+                    print("obj_i", obj_i)
                     obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
                     objetivos.append(obj_i)
                 tp["objectives"] = objetivos
@@ -131,7 +133,7 @@ class VistaTrainingPlan(Resource):
         except Exception as e:
             print(error_msg, e)
             db.session.rollback()
-            return {"message": error_upd_msg, "code": 500}, 500
+            return {"message": "Error al consultar los planes de entrenamiento", "code": 500}, 500
 
 
 class VistaTrainingPlanID(Resource):
