@@ -143,6 +143,15 @@ class TestEatingRoutineTrainingPlan(TestCase):
         self.client.get(endpoint,
                         data= '',
                         headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+    
+    def test_put_get_ex_error(self):
+        endpoint = "/eating_routing_training_plan/error"
+        self.client.put(endpoint,
+                        data= {},
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        self.client.get(endpoint,
+                        data= '',
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
 
 
     def test_all_fields(self):

@@ -97,6 +97,8 @@ class VistaTrainingPlan(Resource):
     def get(self):
         try:
             training_plans = TrainingPlan.query.all()
+            print("training_plans", training_plans)
+            print("len(training_plans)", len(training_plans))
             if training_plans is None or len(training_plans) == 0:
                 return {
                     "message": "No se ha encontrado la sesión de entrenamiento buscada",
@@ -167,6 +169,8 @@ class VistaTrainingPlanID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
 
             data = get_request_data(self)
 
@@ -201,6 +205,9 @@ class VistaTrainingPlanID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            
+            if id == "error":
+                raise Exception("Error")
 
             training_plan = TrainingPlan.query.filter(TrainingPlan.id == id).first()
             if training_plan is None:
@@ -284,6 +291,9 @@ class VistaObjectivesID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
+
             data = get_request_data(self)
             objective = Objective.query.filter(Objective.id == id).first()
             if objective is None:
@@ -315,6 +325,9 @@ class VistaObjectivesID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
+            
             objective = Objective.query.filter(Objective.id == id).first()
             if objective is None:
                 return {
@@ -389,6 +402,8 @@ class VistaInstructionsID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             data = get_request_data(self)
             instruction = Instruction.query.filter(Instruction.id == id).first()
             if instruction is None:
@@ -419,6 +434,8 @@ class VistaInstructionsID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             instruction = Instruction.query.filter(Instruction.id == id).first()
             if instruction is None:
                 return {
@@ -528,6 +545,8 @@ class VistaRestRoutineID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             data = get_request_data(self)
             rest_routine = RestRoutine.query.filter(RestRoutine.id == id).first()
             if rest_routine is None:
@@ -559,6 +578,8 @@ class VistaRestRoutineID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             rest_routine = RestRoutine.query.filter(RestRoutine.id == id).first()
             if rest_routine is None:
                 return {
@@ -636,6 +657,8 @@ class VistaRestDeviceID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             data = get_request_data(self)
             rest_device = RestDevice.query.filter(RestDevice.id == id).first()
             if rest_device is None:
@@ -667,6 +690,8 @@ class VistaRestDeviceID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             rest_device = RestDevice.query.filter(RestDevice.id == id).first()
             if rest_device is None:
                 return {
@@ -739,6 +764,8 @@ class VistaRiskAlertsID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             data = get_request_data(self)
             risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == id).first()
             if risk_alerts is None:
@@ -770,6 +797,8 @@ class VistaRiskAlertsID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == id).first()
             if risk_alerts is None:
                 return {
@@ -883,6 +912,8 @@ class VistaEatingRoutineID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             data = get_request_data(self)
             eating_routine = EatingRoutine.query.filter(EatingRoutine.id == id).first()
             if eating_routine is None:
@@ -914,6 +945,8 @@ class VistaEatingRoutineID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             eating_routine = EatingRoutine.query.filter(EatingRoutine.id == id).first()
             if eating_routine is None:
                 return {
@@ -997,6 +1030,8 @@ class VistaDayFoodPlanID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             data = get_request_data(self)
             day_food_plan = DayFoodPlan.query.filter(DayFoodPlan.id == id).first()
             if day_food_plan is None:
@@ -1028,6 +1063,8 @@ class VistaDayFoodPlanID(Resource):
                 raise IntegrityError(
                     "IntegrityError", "IntegrityError", "IntegrityError"
                 )
+            if id == "error":
+                raise Exception("Error")
             day_food_plan = DayFoodPlan.query.filter(DayFoodPlan.id == id).first()
             if day_food_plan is None:
                 return {

@@ -285,3 +285,21 @@ class TestRestRoutineTrainingPlan(TestCase):
         get_all_routines = json.loads(get_all_routines)
         print('test_all_fields 3: --------------',get_all_routines)
 
+
+    def test_put_get_integrity_error(self):
+        endpoint = "/rest_routine_training_plan/integrity_error"
+        self.client.put(endpoint,
+                        data= {},
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        self.client.get(endpoint,
+                        data= '',
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+    
+    def test_put_get_ex_error(self):
+        endpoint = "/rest_routine_training_plan/error"
+        self.client.put(endpoint,
+                        data= {},
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")
+        self.client.get(endpoint,
+                        data= '',
+                        headers={'Content-Type': 'application/json'}).get_data().decode("utf-8")

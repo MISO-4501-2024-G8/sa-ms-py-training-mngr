@@ -7,6 +7,9 @@ from app import app
 from datetime import datetime
 from unittest.mock import patch, MagicMock
 from sqlalchemy.exc import IntegrityError
+from decouple import config
+import pytest
+import sqlite3
 
 
 class TestTrainingPlan(TestCase):
@@ -228,9 +231,27 @@ class TestTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(
             solicitud_crear_planEntrenamiento
         )
-        self.assertTrue(
-            solicitud_crear_planEntrenamiento["message"]
-            == "No se pudo realizar la Actualización"
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se pudo realizar la Actualización"
+        )
+    
+    def test_get_error(self):
+        # Configura el endpoint para la solicitud que generará la excepción IntegrityError
+        endpoint = "/training_plan/error"
+        solicitud_crear_planEntrenamiento = (
+            self.client.get(
+                endpoint, data="", headers={"Content-Type": "application/json"}
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_planEntrenamiento = json.loads(
+            solicitud_crear_planEntrenamiento
+        )
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se pudo realizar la Actualización"
         )
 
     def test_put_not_None(self):
@@ -382,6 +403,39 @@ class TestTrainingPlan(TestCase):
         self.assertTrue(
             solicitud_crear_planEntrenamiento["message"]
             == "No se pudo realizar la Actualización"
+        )
+
+    def test_put_error(self):
+        ttraining_plan_fake = {
+            "name": self.data_factory.name(),
+            "description": self.data_factory.name(),
+            "weeks": self.data_factory.random_digit(),
+            "lunes_enabled": self.data_factory.random_digit(),
+            "martes_enabled": self.data_factory.random_digit(),
+            "miercoles_enabled": self.data_factory.random_digit(),
+            "jueves_enabled": self.data_factory.random_digit(),
+            "viernes_enabled": self.data_factory.random_digit(),
+            "typePlan": self.data_factory.word(),
+            "sport": self.data_factory.word(),
+            "id_eating_routine": "123",
+            "id_rest_routine": "123",
+        }
+        endpoint = "/training_plan/error"
+        solicitud_crear_planEntrenamiento = (
+            self.client.put(
+                endpoint,
+                data=json.dumps(ttraining_plan_fake),
+                headers={"Content-Type": "application/json"},
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_planEntrenamiento = json.loads(
+            solicitud_crear_planEntrenamiento
+        )
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se pudo realizar la Actualización"
         )
 
     def test_all_fields(self):
