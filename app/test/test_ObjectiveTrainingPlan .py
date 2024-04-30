@@ -12,15 +12,15 @@ class TestObjetiveTrainingPlan(TestCase):
     def setUp(self):
         self.data_factory = Faker()
         self.client = app.test_client()
-        self.endpoint = "/objetive_training_plan/fcd6e4af"
+        self.endpoint = "/objetive_training_plan"
+        self.endpoint_id = "/objetive_training_plan/fcd6e4af"
 
     def test_post_not_None(self):
         nuevo_training_plan_fake = {
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.post(
@@ -38,8 +38,7 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.post(
@@ -55,7 +54,7 @@ class TestObjetiveTrainingPlan(TestCase):
         )
         self.assertTrue(
             solicitud_crear_planEntrenamiento["message"]
-            == "Se pudo crear el objetivo sesion de entrenamiento exitosamante"
+            == "Se pudo crear el objetivo sesion exitosamante"
         )
 
     def test_post_error(self):
@@ -63,8 +62,7 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.name(),
             "type_objective": self.data_factory.name(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.post(
@@ -80,13 +78,13 @@ class TestObjetiveTrainingPlan(TestCase):
         )
         self.assertTrue(
             solicitud_crear_planEntrenamiento["message"]
-            == "No se pudo crear el objetivo sesion de entrenamiento"
+            == "No se pudo crear el objetivo sesion"
         )
 
     def test_get_not_None(self):
         solicitud_crear_planEntrenamiento = (
             self.client.get(
-                self.endpoint, data="", headers={"Content-Type": "application/json"}
+                self.endpoint_id, data="", headers={"Content-Type": "application/json"}
             )
             .get_data()
             .decode("utf-8")
@@ -98,8 +96,7 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.post(
@@ -113,7 +110,7 @@ class TestObjetiveTrainingPlan(TestCase):
         id_objective = json.loads(solicitud_crear_planEntrenamiento)["objective"]["id"]
         solicitud_crear_planEntrenamiento = (
             self.client.get(
-                self.endpoint.replace("fcd6e4af", id_objective),
+                self.endpoint_id.replace("fcd6e4af", id_objective),
                 data="",
                 headers={"Content-Type": "application/json"},
             )
@@ -129,7 +126,7 @@ class TestObjetiveTrainingPlan(TestCase):
         )
 
     def test_get_error(self):
-        endpoint = "/objetive_training_plan/fcd6e"
+        endpoint = "/objetive_training_plan/noexiste"
         solicitud_crear_planEntrenamiento = (
             self.client.get(
                 endpoint, data="", headers={"Content-Type": "application/json"}
@@ -140,9 +137,10 @@ class TestObjetiveTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(
             solicitud_crear_planEntrenamiento
         )
-        self.assertTrue(
-            solicitud_crear_planEntrenamiento["message"]
-            == "No se ha encontrado coninsidencia del objetivo del plan entranamiento buscado"
+
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se ha encontrado coninsidencia del objetivo del plan entranamiento buscado"
         )
 
     def test_put_not_None(self):
@@ -150,12 +148,11 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.put(
-                self.endpoint,
+                self.endpoint_id,
                 data=json.dumps(nuevo_training_plan_fake),
                 headers={"Content-Type": "application/json"},
             )
@@ -169,8 +166,7 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.post(
@@ -186,12 +182,11 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.put(
-                self.endpoint.replace("fcd6e4af", id_objective),
+                self.endpoint_id.replace("fcd6e4af", id_objective),
                 data=json.dumps(nuevo_training_plan_fake),
                 headers={"Content-Type": "application/json"},
             )
@@ -212,8 +207,7 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.put(
@@ -238,8 +232,7 @@ class TestObjetiveTrainingPlan(TestCase):
             "day": self.data_factory.name(),
             "objective_repeats": self.data_factory.random_digit(),
             "type_objective": self.data_factory.random_digit(),
-            "id_training_plan": None,
-            "id_rest_routine": "b76ff61a",
+            "id_routine": "b76ff61a",
         }
         solicitud_crear_planEntrenamiento = (
             self.client.put(

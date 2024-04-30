@@ -24,7 +24,7 @@ pip3 install -r requirements.txt
 correr flask Ambiente alto
 ```
 export FLASK_APP=app/app.py
-export DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session
+export DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_plan
 flask run -p 5001
 ```
 
@@ -46,11 +46,11 @@ coverage html -d coverage_report
 
 correr tests con pytest ambiente productivo
 ```
-export FLASK_APP=app/app.py
-export DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session
-pytest -s --cov=app/ --cov-report xml --junitxml=pytest-report.xml
+unset DATABASE_URL
+pytest --cov=app/ --cov-report xml --junitxml=pytest-report.xml
 coverage xml
-cover
+coverage html -d coverage_report
+```
 
 
 Generar imagen de docker

@@ -32,7 +32,7 @@
                 },
                 {
                     "name": "DATABASE_URL",
-                    "value": "mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_session"
+                    "value": "mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_plan"
                 }
             ],
             "mountPoints": [],
