@@ -65,4 +65,4 @@ jwt = JWTManager(app)
 print(' * TRAINING MNGR corriendo ----------------')
 
 if __name__=='__main__': 
-    app.run(port=5001, debug=True) # NOSONAR
+    app.run(port=5001)
