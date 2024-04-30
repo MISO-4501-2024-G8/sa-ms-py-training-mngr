@@ -400,9 +400,9 @@ class TestTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(
             solicitud_crear_planEntrenamiento
         )
-        self.assertTrue(
-            solicitud_crear_planEntrenamiento["message"]
-            == "No se pudo realizar la Actualización"
+        self.assertEqual(
+            solicitud_crear_planEntrenamiento["message"],
+            "No se pudo realizar la Actualización"
         )
 
     def test_put_error(self):
