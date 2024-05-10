@@ -24,7 +24,7 @@ pip3 install -r requirements.txt
 correr flask Ambiente alto
 ```
 export FLASK_APP=app/app.py
-export DATABASE_URL=mysql+pymysql://admin:123456789@databasesportapp.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_plan
+export DATABASE_URL=mysql+pymysql://admin:c5d5e19030104ba38e131c2ee8e76dec@dbsportapprestore.cvweuasge1pc.us-east-1.rds.amazonaws.com/db_training_plan
 flask run -p 5001
 ```
 
