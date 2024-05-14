@@ -110,28 +110,31 @@ class VistaTrainingPlan(Resource):
     def get(self):
         try:
             training_plans = TrainingPlan.query.all()
-            print("training_plans", training_plans)
+            #print("training_plans", training_plans)
             print("len(training_plans)", len(training_plans))
             if training_plans is None or len(training_plans) == 0:
                 return {
-                    "message": "No se ha encontrado la sesión de entrenamiento buscada",
+                    "message": "No se ha encontrado sesiones de entrenamiento",
                     "code": 404,
                 }, 404
 
             result_training_plans = []
             for training_plan in training_plans:
                 tp = training_plan_schema.dump(training_plan)
-                print("tp", tp)
                 objectives = Objective.query.filter(Objective.id_routine == tp["id"]).all()
                 objetivos = []
                 for obj in objectives:
                     obj_i = objective_schema.dump(obj) 
-                    print("obj_i", obj_i)
                     obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
                     objetivos.append(obj_i)
                 tp["objectives"] = objetivos
+                risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == tp["id"]).first()
+                tp["risk_alerts"] = risk_alerts_schema.dump(risk_alerts)
+                eating_routine = EatingRoutine.query.filter(EatingRoutine.id == tp["id_eating_routine"]).first()
+                tp["eating_routine"] = eating_routine_schema.dump(eating_routine)
+                rest_routine = RestRoutine.query.filter(RestRoutine.id == tp["id_rest_routine"]).first()
+                tp["rest_routine"] = rest_routine_schema.dump(rest_routine)
                 result_training_plans.append(tp)
-
             return {
                 "message": "Se Encontraron las sesiones",
                 "training_plans": result_training_plans,
@@ -215,10 +218,25 @@ class VistaTrainingPlanID(Resource):
                     "message": "No se ha encontrado coninsidencia del plan de entranamiento buscado",
                     "code": 404,
                 }, 404
+            
+            tp = training_plan_schema.dump(training_plan)
+            objectives = Objective.query.filter(Objective.id_routine == tp["id"]).all()
+            objetivos = []
+            for obj in objectives:
+                obj_i = objective_schema.dump(obj) 
+                obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
+                objetivos.append(obj_i)
+            tp["objectives"] = objetivos
+            risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == tp["id"]).first()
+            tp["risk_alerts"] = risk_alerts_schema.dump(risk_alerts)
+            eating_routine = EatingRoutine.query.filter(EatingRoutine.id == tp["id_eating_routine"]).first()
+            tp["eating_routine"] = eating_routine_schema.dump(eating_routine)
+            rest_routine = RestRoutine.query.filter(RestRoutine.id == tp["id_rest_routine"]).first()
+            tp["rest_routine"] = rest_routine_schema.dump(rest_routine)
 
             return {
                 "message": "Se Encontro el plan de entranamiento buscado",
-                "training_plan": training_plan_schema.dump(training_plan),
+                "training_plan": tp,
                 "code": 200,
             }, 200
 
@@ -229,8 +247,17 @@ class VistaTrainingPlanID(Resource):
 
     def delete(self, id):
         training_plan = TrainingPlan.query.get_or_404(id)
+        objectives = Objective.query.filter(Objective.id_routine == id).all()
+        for obj in objectives:
+            instructions = Instruction.query.filter(Instruction.id_objective == obj.id).all()
+            for ins in instructions:
+                db.session.delete(ins)
+            db.session.delete(obj)
+        risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == id).first()
+        db.session.delete(risk_alerts)
         db.session.delete(training_plan)
         db.session.commit()
+        return {"message": "Se elimino el plan de entrenamiento", "code": 200}, 200
 
 
 class VistaObjectives(Resource):
@@ -533,10 +560,21 @@ class VistaRestRoutineID(Resource):
                     "message": "No se ha encontrado la rutina de descanso buscada",
                     "code": 404,
                 }, 404
+            
+            rest_rt = rest_routine_schema.dump(rest_routine)
+            rest_obj = Objective.query.filter(Objective.id_routine == rest_rt["id"]).all()
+            objetivos = []
+            for obj in rest_obj:
+                obj_i = objective_schema.dump(obj) 
+                obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
+                objetivos.append(obj_i)
+            rest_rt["objectives"] = objetivos
+            rest_devices = RestDevice.query.filter(RestDevice.id_rest_routine == rest_rt["id"]).all()
+            rest_rt["rest_devices"] = rest_device_schema.dump(rest_devices, many=True)
 
             return {
                 "message": "Se Encontro la rutina de descanso buscada",
-                "rest_routine": rest_routine_schema.dump(rest_routine),
+                "rest_routine": rest_rt,
                 "code": 200,
             }, 200
 
@@ -849,9 +887,13 @@ class VistaEatingRoutineID(Resource):
                     "code": 404,
                 }, 404
 
+            eroutine_dict = eating_routine_schema.dump(eating_routine)
+            day_food_plans = DayFoodPlan.query.filter(DayFoodPlan.id_eating_routine == eating_routine.id).all()
+            eroutine_dict["day_food_plans"] = day_food_plan_schema.dump(day_food_plans, many=True)
+            
             return {
                 "message": "Se Encontro la rutina de alimentacion buscada",
-                "eating_routine": eating_routine_schema.dump(eating_routine),
+                "eating_routine": eroutine_dict,
                 "code": 200,
             }, 200
 
