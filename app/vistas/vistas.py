@@ -120,21 +120,21 @@ class VistaTrainingPlan(Resource):
 
             result_training_plans = []
             for training_plan in training_plans:
-                tp = training_plan_schema.dump(training_plan)
-                objectives = Objective.query.filter(Objective.id_routine == tp["id"]).all()
-                objetivos = []
-                for obj in objectives:
+                tp_base = training_plan_schema.dump(training_plan)
+                objectives_tp = Objective.query.filter(Objective.id_routine == tp_base["id"]).all()
+                objetivos_tp = []
+                for obj in objectives_tp:
                     obj_i = objective_schema.dump(obj) 
                     obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
-                    objetivos.append(obj_i)
-                tp["objectives"] = objetivos
-                risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == tp["id"]).first()
-                tp["risk_alerts"] = risk_alerts_schema.dump(risk_alerts)
-                eating_routine = EatingRoutine.query.filter(EatingRoutine.id == tp["id_eating_routine"]).first()
-                tp["eating_routine"] = eating_routine_schema.dump(eating_routine)
-                rest_routine = RestRoutine.query.filter(RestRoutine.id == tp["id_rest_routine"]).first()
-                tp["rest_routine"] = rest_routine_schema.dump(rest_routine)
-                result_training_plans.append(tp)
+                    objetivos_tp.append(obj_i)
+                tp_base["objectives"] = objetivos_tp
+                risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == tp_base["id"]).first()
+                tp_base["risk_alerts"] = risk_alerts_schema.dump(risk_alerts)
+                eating_routine = EatingRoutine.query.filter(EatingRoutine.id == tp_base["id_eating_routine"]).first()
+                tp_base["eating_routine"] = eating_routine_schema.dump(eating_routine)
+                rest_routine = RestRoutine.query.filter(RestRoutine.id == tp_base["id_rest_routine"]).first()
+                tp_base["rest_routine"] = rest_routine_schema.dump(rest_routine)
+                result_training_plans.append(tp_base)
             return {
                 "message": "Se Encontraron las sesiones",
                 "training_plans": result_training_plans,
@@ -219,24 +219,24 @@ class VistaTrainingPlanID(Resource):
                     "code": 404,
                 }, 404
             
-            tp = training_plan_schema.dump(training_plan)
-            objectives = Objective.query.filter(Objective.id_routine == tp["id"]).all()
-            objetivos = []
-            for obj in objectives:
+            tp_s = training_plan_schema.dump(training_plan)
+            objectives_s = Objective.query.filter(Objective.id_routine == tp_s["id"]).all()
+            objetivos_s = []
+            for obj in objectives_s:
                 obj_i = objective_schema.dump(obj) 
                 obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
-                objetivos.append(obj_i)
-            tp["objectives"] = objetivos
-            risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == tp["id"]).first()
-            tp["risk_alerts"] = risk_alerts_schema.dump(risk_alerts)
-            eating_routine = EatingRoutine.query.filter(EatingRoutine.id == tp["id_eating_routine"]).first()
-            tp["eating_routine"] = eating_routine_schema.dump(eating_routine)
-            rest_routine = RestRoutine.query.filter(RestRoutine.id == tp["id_rest_routine"]).first()
-            tp["rest_routine"] = rest_routine_schema.dump(rest_routine)
+                objetivos_s.append(obj_i)
+            tp_s["objectives"] = objetivos_s
+            risk_alerts = RiskAlerts.query.filter(RiskAlerts.training_plan_id == tp_s["id"]).first()
+            tp_s["risk_alerts"] = risk_alerts_schema.dump(risk_alerts)
+            eating_routine = EatingRoutine.query.filter(EatingRoutine.id == tp_s["id_eating_routine"]).first()
+            tp_s["eating_routine"] = eating_routine_schema.dump(eating_routine)
+            rest_routine = RestRoutine.query.filter(RestRoutine.id == tp_s["id_rest_routine"]).first()
+            tp_s["rest_routine"] = rest_routine_schema.dump(rest_routine)
 
             return {
                 "message": "Se Encontro el plan de entranamiento buscado",
-                "training_plan": tp,
+                "training_plan": tp_s,
                 "code": 200,
             }, 200
 
