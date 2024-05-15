@@ -486,23 +486,23 @@ class VistaRestRoutine(Resource):
                     "code": 404,
                 }, 404
 
-            result_rest_routines = []
+            result_rest_routines_base = []
             for rest_routine in rest_routine:
-                rest_rt = rest_routine_schema.dump(rest_routine)
-                rest_obj = Objective.query.filter(Objective.id_routine == rest_rt["id"]).all()
+                rest_rt_base = rest_routine_schema.dump(rest_routine)
+                rest_obj_base = Objective.query.filter(Objective.id_routine == rest_rt_base["id"]).all()
                 objetivos = []
-                for obj in rest_obj:
+                for obj in rest_obj_base:
                     obj_i = objective_schema.dump(obj) 
                     obj_i["instructions"] = instruction_schema.dump(Instruction.query.filter(Instruction.id_objective == obj_i["id"]).all(), many=True)
                     objetivos.append(obj_i)
-                rest_rt["objectives"] = objetivos
-                rest_devices = RestDevice.query.filter(RestDevice.id_rest_routine == rest_rt["id"]).all()
-                rest_rt["rest_devices"] = rest_device_schema.dump(rest_devices, many=True)
-                result_rest_routines.append(rest_rt)
+                rest_rt_base["objectives"] = objetivos
+                rest_devices_base = RestDevice.query.filter(RestDevice.id_rest_routine == rest_rt_base["id"]).all()
+                rest_rt_base["rest_devices"] = rest_device_schema.dump(rest_devices_base, many=True)
+                result_rest_routines_base.append(rest_rt_base)
         
             return {
                 "message": "Se Encontraron las rutinas de descanso",
-                "rest_routines": result_rest_routines,
+                "rest_routines": result_rest_routines_base,
                 "code": 200,
             }, 200
 
