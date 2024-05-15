@@ -184,6 +184,50 @@ class TestTrainingPlan(TestCase):
             solicitud_crear_planEntrenamiento
         )
         print('test_get_succes ',solicitud_crear_planEntrenamiento)
+        solicitud_crear_objetivo = (
+        self.client.post(
+            "/objetive_training_plan",
+            data=json.dumps(
+                {
+                    "day": self.data_factory.name(),
+                    "objective_repeats": self.data_factory.random_digit(),
+                    "type_objective": self.data_factory.random_digit(),
+                    "id_routine": solicitud_crear_planEntrenamiento["training_plan"]["id"],
+                }
+            ),
+            headers={"Content-Type": "application/json"},
+        ).get_data().decode("utf-8")
+        )
+        solicitud_crear_objetivo = json.loads(solicitud_crear_objetivo)
+        solicitud_crear_instruccion = (
+            self.client.post(
+                "/instruction_training_plan",
+                data=json.dumps(
+                    {
+                        "instruction_description": self.data_factory.name(),
+                        "instruction_time": self.data_factory.random_digit(),
+                        "id_objective": solicitud_crear_objetivo["objective"]["id"],
+                    }
+                ),
+                headers={"Content-Type": "application/json"},
+            ).get_data().decode("utf-8")
+        )
+        solicitud_crear_instruccion = json.loads(solicitud_crear_instruccion)
+        solicitud_crear_alertas = (
+            self.client.post(
+                "/risk_alerts_training_plan",
+                data=json.dumps(
+                    {
+                        "stop_training": "1",
+                        "notifications": "1",
+                        "enable_phone": "1",
+                        "id_training_plan": solicitud_crear_planEntrenamiento["training_plan"]["id"],
+                    }
+                ),
+                headers={"Content-Type": "application/json"},
+            ).get_data().decode("utf-8")
+        )
+        solicitud_crear_alertas = json.loads(solicitud_crear_alertas)
         id_training_plan = solicitud_crear_planEntrenamiento["training_plan"]["id"]
         solicitud_crear_planEntrenamiento = (
             self.client.get(
@@ -197,10 +241,7 @@ class TestTrainingPlan(TestCase):
         solicitud_crear_planEntrenamiento = json.loads(
             solicitud_crear_planEntrenamiento
         )
-        self.assertTrue(
-            solicitud_crear_planEntrenamiento["message"]
-            == "Se Encontro el plan de entranamiento buscado"
-        )
+        self.assertEqual(solicitud_crear_planEntrenamiento["message"],"Se Encontro el plan de entranamiento buscado")
 
     def test_get_error(self):
         endpoint = "/training_plan/372a7"
@@ -488,3 +529,129 @@ class TestTrainingPlan(TestCase):
         get_all_plans = (self.client.get(self.endpoint, headers={"Content-Type": "application/json"}).get_data().decode("utf-8"))
         get_all_plans = json.loads(get_all_plans)
         print('test_all_fields 3: --------------',get_all_plans)
+
+    def test_delete_training_plan(self):
+        nuevo_training_plan_fake = {
+            "name": self.data_factory.name(),
+            "description": self.data_factory.name(),
+            "weeks": self.data_factory.random_digit(),
+            "lunes_enabled": self.data_factory.random_digit(),
+            "martes_enabled": self.data_factory.random_digit(),
+            "miercoles_enabled": self.data_factory.random_digit(),
+            "jueves_enabled": self.data_factory.random_digit(),
+            "viernes_enabled": self.data_factory.random_digit(),
+            "typePlan": self.data_factory.word(),
+            "sport": self.data_factory.word(),
+            "id_eating_routine": "123",
+            "id_rest_routine": "123",
+        }
+        solicitud_crear_plan_entrenamiento = (
+            self.client.post(
+                self.endpoint,
+                data=json.dumps(nuevo_training_plan_fake),
+                headers={"Content-Type": "application/json"},
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_crear_plan_entrenamiento = json.loads(
+            solicitud_crear_plan_entrenamiento
+        )
+        id_training_plan = solicitud_crear_plan_entrenamiento["training_plan"]["id"]
+        # solicitud_crear_plan_entrenamiento = (
+        #     self.client.delete(
+        #         self.endpoint_id.replace("3872a743", id_training_plan),
+        #         data="",
+        #         headers={"Content-Type": "application/json"},
+        #     )
+        #     .get_data()
+        #     .decode("utf-8")
+        # )
+        # solicitud_crear_plan_entrenamiento = json.loads(
+        #     solicitud_crear_plan_entrenamiento
+        # )
+
+        solicitud_crear_objetivo = (
+        self.client.post(
+            "/objetive_training_plan",
+            data=json.dumps(
+                {
+                    "day": self.data_factory.name(),
+                    "objective_repeats": self.data_factory.random_digit(),
+                    "type_objective": self.data_factory.random_digit(),
+                    "id_routine": solicitud_crear_plan_entrenamiento["training_plan"]["id"],
+                }
+            ),
+            headers={"Content-Type": "application/json"},
+        ).get_data().decode("utf-8")
+        )
+        solicitud_crear_objetivo = json.loads(solicitud_crear_objetivo)
+        solicitud_crear_instruccion = (
+            self.client.post(
+                "/instruction_training_plan",
+                data=json.dumps(
+                    {
+                        "instruction_description": self.data_factory.name(),
+                        "instruction_time": self.data_factory.random_digit(),
+                        "id_objective": solicitud_crear_objetivo["objective"]["id"],
+                    }
+                ),
+                headers={"Content-Type": "application/json"},
+            ).get_data().decode("utf-8")
+        )
+        solicitud_crear_instruccion = json.loads(solicitud_crear_instruccion)
+        solicitud_crear_alertas = (
+            self.client.post(
+                "/risk_alerts_training_plan",
+                data=json.dumps(
+                    {
+                        "stop_training": "1",
+                        "notifications": "1",
+                        "enable_phone": "1",
+                        "id_training_plan": solicitud_crear_plan_entrenamiento["training_plan"]["id"],
+                    }
+                ),
+                headers={"Content-Type": "application/json"},
+            ).get_data().decode("utf-8")
+        )
+        solicitud_crear_alertas = json.loads(solicitud_crear_alertas)
+        id_training_plan = solicitud_crear_plan_entrenamiento["training_plan"]["id"]
+        solicitud_obtener_planes_entrenamiento = (
+            self.client.get(
+                self.endpoint, data="", headers={"Content-Type": "application/json"}
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_obtener_planes_entrenamiento = json.loads(
+            solicitud_obtener_planes_entrenamiento
+        )
+        solicitud_obtener_plan_por_id = (
+            self.client.get(
+                self.endpoint_id.replace("3872a743", id_training_plan),
+                data="",
+                headers={"Content-Type": "application/json"},
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_obtener_plan_por_id = json.loads(
+            solicitud_obtener_plan_por_id
+        )
+
+        solicitud_borrar_plan_entrenamiento = (
+            self.client.delete(
+                "/training_plan/" + id_training_plan,
+                data="",
+                headers={"Content-Type": "application/json"},
+            )
+            .get_data()
+            .decode("utf-8")
+        )
+        solicitud_borrar_plan_entrenamiento = json.loads(
+            solicitud_borrar_plan_entrenamiento
+        )
+        self.assertEqual(
+            solicitud_borrar_plan_entrenamiento["message"],
+            "Se elimino el plan de entrenamiento"
+        )
